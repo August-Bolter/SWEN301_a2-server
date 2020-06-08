@@ -1,6 +1,7 @@
 package nz.ac.vuw.swen301.a2.server;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import javax.servlet.ServletException;
@@ -71,6 +72,7 @@ public class LogsServlet extends HttpServlet {
 
         int numLogs = 0;
         List<JsonObject> output = new ArrayList<JsonObject>(limit);
+        JsonArray jArray = new JsonArray();
 
         for (JsonObject j : logs) {
             for (String s : levelsToConsider) {
@@ -84,10 +86,10 @@ public class LogsServlet extends HttpServlet {
         }
         output.sort((o1, o2) -> {
             try {
-                Date dateo1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(o1.get("timestamp").toString());
-                Date dateo2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(o2.get("timestamp").toString());
-                if (dateo1.after(dateo2)) return 1;
-                else if (dateo2.after(dateo1)) return -1;
+                Date dateO1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(o1.get("timestamp").toString());
+                Date dateO2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(o2.get("timestamp").toString());
+                if (dateO1.after(dateO2)) return 1;
+                else if (dateO2.after(dateO1)) return -1;
             }
             catch (ParseException e) {
                 e.printStackTrace();
@@ -96,8 +98,9 @@ public class LogsServlet extends HttpServlet {
         });
 
         for (JsonObject j : output) {
-            out.println(j.toString());
+            jArray.add(j);
         }
+        out.print(jArray.toString());
         out.close();
         resp.setStatus(200);
     }
