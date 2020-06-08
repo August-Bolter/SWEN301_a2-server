@@ -28,7 +28,7 @@ public class LogsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (req.getParameter("limit") == null || req.getParameter("level") == null) {
             resp.sendError(400);
             return;
@@ -103,7 +103,7 @@ public class LogsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(req.getParameter("LogEvent") == null) {
             resp.sendError(400);
         }
@@ -230,6 +230,36 @@ public class LogsServlet extends HttpServlet {
         }
         logs.add(j);
         resp.setStatus(201);
+    }
+
+    public void addTestingLogs() {
+        JsonObject newObj = new JsonObject();
+        newObj.addProperty("id", "d290f1ee-6c54-4b01-90e6-d701748f0851");
+        newObj.addProperty("message", "Everything running smoothly");
+        newObj.addProperty("timestamp", "2019-07-29T09:12:33.001Z");
+        newObj.addProperty("thread", "main");
+        newObj.addProperty("logger", "com.example.Foo");
+        newObj.addProperty("level", "INFO");
+
+        JsonObject newObj1 = new JsonObject();
+        newObj1.addProperty("id", "e290f1ee-6c54-4b01-90e6-d701748f0851");
+        newObj1.addProperty("message", "Threat received");
+        newObj1.addProperty("timestamp", "2020-04-29T09:12:33.001Z");
+        newObj1.addProperty("thread", "main");
+        newObj1.addProperty("logger", "com.example.Foo");
+        newObj1.addProperty("level", "WARN");
+
+        JsonObject newObj2 = new JsonObject();
+        newObj2.addProperty("id", "c290f1ee-6c54-4b01-90e6-d701748f0851");
+        newObj2.addProperty("message", "Unexpected encounter");
+        newObj2.addProperty("timestamp", "2020-03-29T09:12:33.001Z");
+        newObj2.addProperty("thread", "main");
+        newObj2.addProperty("logger", "com.example.Foo");
+        newObj2.addProperty("level", "ERROR");
+
+        logs.add(newObj);
+        logs.add(newObj1);
+        logs.add(newObj2);
     }
 }
 
