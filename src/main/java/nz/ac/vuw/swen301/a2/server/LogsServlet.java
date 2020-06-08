@@ -28,7 +28,7 @@ public class LogsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (req.getParameter("limit") == null || req.getParameter("level") == null) {
             resp.sendError(400);
             return;
@@ -103,7 +103,7 @@ public class LogsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(req.getParameter("LogEvent") == null) {
             resp.sendError(400);
         }
@@ -232,3 +232,5 @@ public class LogsServlet extends HttpServlet {
         resp.setStatus(201);
     }
 }
+
+//Maybe include descriptions with sendError() calls
