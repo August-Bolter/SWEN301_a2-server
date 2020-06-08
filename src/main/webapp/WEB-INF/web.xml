@@ -1,0 +1,14 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <servlet>
+    <servlet-name>UserAgentServlet</servlet-name>
+    <servlet-class>nz.ac.vuw.swen301.a2.server.UserAgentDetectorServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserAgentServlet</servlet-name>
+    <url-pattern>/whatsyourbrowser</url-pattern>
+  </servlet-mapping>
+</web-app>
