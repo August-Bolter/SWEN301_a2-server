@@ -97,10 +97,15 @@ public class LogsServlet extends HttpServlet {
             return 0;
         });
 
-        for (JsonObject j : output) {
-            jArray.add(j);
+        if (jArray.size() > 1) {
+            for (JsonObject j : output) {
+                jArray.add(j);
+            }
+            out.print(jArray.toString());
         }
-        out.print(jArray.toString());
+        else if (jArray.size() == 1){
+            out.print(jArray.get(0).toString());
+        }
         out.close();
         resp.setStatus(200);
     }
