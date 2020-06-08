@@ -98,31 +98,31 @@ public class TestGetLogs {
         service.addTestingLogs();
         request.addParameter("limit", "3");
         request.addParameter("level", "INFO");
+        service.doGet(request, response);
         String result = response.getContentAsString();
-        JsonParser parser = new JsonParser();
-        JsonElement e = parser.parse(result);
-        JsonArray logs = e.getAsJsonArray();
+        Gson g = new Gson();
+        JsonArray logs = g.fromJson(result, JsonArray.class);
         assertEquals(3, logs.size());
-        assertEquals("e290f1ee-6c54-4b01-90e6-d701748f0851", logs.get(0).getAsJsonObject().get("id").toString());
-        assertEquals("Threat received", logs.get(0).getAsJsonObject().get("message").toString());
-        assertEquals("2020-04-29T09:12:33.001Z", logs.get(0).getAsJsonObject().get("timestamp").toString());
-        assertEquals("main", logs.get(0).getAsJsonObject().get("thread").toString());
-        assertEquals("com.example.Foo", logs.get(0).getAsJsonObject().get("logger").toString());
-        assertEquals("WARN", logs.get(0).getAsJsonObject().get("level").toString());
+        assertEquals("\"e290f1ee-6c54-4b01-90e6-d701748f0851\"", logs.get(0).getAsJsonObject().get("id").toString());
+        assertEquals("\"Threat received\"", logs.get(0).getAsJsonObject().get("message").toString());
+        assertEquals("\"2020-04-29T09:12:33.001Z\"", logs.get(0).getAsJsonObject().get("timestamp").toString());
+        assertEquals("\"main\"", logs.get(0).getAsJsonObject().get("thread").toString());
+        assertEquals("\"com.example.Foo\"", logs.get(0).getAsJsonObject().get("logger").toString());
+        assertEquals("\"WARN\"", logs.get(0).getAsJsonObject().get("level").toString());
 
-        assertEquals("c290f1ee-6c54-4b01-90e6-d701748f0851", logs.get(1).getAsJsonObject().get("id").toString());
-        assertEquals("Unexpected encounter", logs.get(1).getAsJsonObject().get("message").toString());
-        assertEquals("2020-03-29T09:12:33.001Z", logs.get(1).getAsJsonObject().get("timestamp").toString());
-        assertEquals("main", logs.get(1).getAsJsonObject().get("thread").toString());
-        assertEquals("com.example.Foo", logs.get(1).getAsJsonObject().get("logger").toString());
-        assertEquals("ERROR", logs.get(1).getAsJsonObject().get("level").toString());
+        assertEquals("\"c290f1ee-6c54-4b01-90e6-d701748f0851\"", logs.get(1).getAsJsonObject().get("id").toString());
+        assertEquals("\"Unexpected encounter\"", logs.get(1).getAsJsonObject().get("message").toString());
+        assertEquals("\"2020-03-29T09:12:33.001Z\"", logs.get(1).getAsJsonObject().get("timestamp").toString());
+        assertEquals("\"main\"", logs.get(1).getAsJsonObject().get("thread").toString());
+        assertEquals("\"com.example.Foo\"", logs.get(1).getAsJsonObject().get("logger").toString());
+        assertEquals("\"ERROR\"", logs.get(1).getAsJsonObject().get("level").toString());
 
-        assertEquals("d290f1ee-6c54-4b01-90e6-d701748f0851", logs.get(2).getAsJsonObject().get("id").toString());
-        assertEquals("Everything running smoothly", logs.get(2).getAsJsonObject().get("message").toString());
-        assertEquals("2019-07-29T09:12:33.001Z", logs.get(2).getAsJsonObject().get("timestamp").toString());
-        assertEquals("main", logs.get(2).getAsJsonObject().get("thread").toString());
-        assertEquals("com.example.Foo", logs.get(2).getAsJsonObject().get("logger").toString());
-        assertEquals("INFO", logs.get(2).getAsJsonObject().get("level").toString());
+        assertEquals("\"d290f1ee-6c54-4b01-90e6-d701748f0851\"", logs.get(2).getAsJsonObject().get("id").toString());
+        assertEquals("\"Everything running smoothly\"", logs.get(2).getAsJsonObject().get("message").toString());
+        assertEquals("\"2019-07-29T09:12:33.001Z\"", logs.get(2).getAsJsonObject().get("timestamp").toString());
+        assertEquals("\"main\"", logs.get(2).getAsJsonObject().get("thread").toString());
+        assertEquals("\"com.example.Foo\"", logs.get(2).getAsJsonObject().get("logger").toString());
+        assertEquals("\"INFO\"", logs.get(2).getAsJsonObject().get("level").toString());
 
     }
 
@@ -147,13 +147,14 @@ public class TestGetLogs {
         service.addTestingLogs();
         request.addParameter("limit", "2");
         request.addParameter("level", "INFO");
+        service.doGet(request, response);
         String result = response.getContentAsString();
-        JsonParser parser = new JsonParser();
-        JsonElement e = parser.parse(result);
-        JsonArray logs = e.getAsJsonArray();
+        Gson g = new Gson();
+        JsonArray logs = g.fromJson(result, JsonArray.class);
         assertEquals(2, logs.size());
     }
 
+    @Test
     /** Tests that request's level parameter filters the response to logs that have a level equal to or higher than the level parameter */
     public void testValidLevelFilteringResponse() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -162,10 +163,10 @@ public class TestGetLogs {
         service.addTestingLogs();
         request.addParameter("limit", "3");
         request.addParameter("level", "WARN");
+        service.doGet(request, response);
         String result = response.getContentAsString();
-        JsonParser parser = new JsonParser();
-        JsonElement e = parser.parse(result);
-        JsonArray logs = e.getAsJsonArray();
+        Gson g = new Gson();
+        JsonArray logs = g.fromJson(result, JsonArray.class);
         assertEquals(2, logs.size());
         assertEquals("WARN", logs.get(0).getAsJsonObject().get("level"));
         assertEquals("ERROR", logs.get(1).getAsJsonObject().get("level"));
