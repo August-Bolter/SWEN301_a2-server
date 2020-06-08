@@ -168,7 +168,7 @@ public class TestGetLogs {
         Gson g = new Gson();
         JsonArray logs = g.fromJson(result, JsonArray.class);
         assertEquals(2, logs.size());
-        assertEquals("WARN", logs.get(0).getAsJsonObject().get("level"));
-        assertEquals("ERROR", logs.get(1).getAsJsonObject().get("level"));
+        assertEquals("\"WARN\"", logs.get(0).getAsJsonObject().get("level").toString());
+        assertEquals("\"ERROR\"", logs.get(1).getAsJsonObject().get("level").toString());
     }
 }

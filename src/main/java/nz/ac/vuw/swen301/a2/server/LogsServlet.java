@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -76,7 +75,7 @@ public class LogsServlet extends HttpServlet {
 
         for (JsonObject j : logs) {
             for (String s : levelsToConsider) {
-                if(req.getParameter("level").equals(s)) {
+                if(j.get("level").toString().substring(1, j.get("level").toString().length()-1).equals(s)) {
                     if (numLogs != limit) {
                         output.add(j);
                         numLogs++;
