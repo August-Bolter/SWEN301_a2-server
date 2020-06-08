@@ -48,7 +48,9 @@ public class TestGetLogs {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         LogsServlet service = new LogsServlet();
+        service.addTestingLogs();
         request.addParameter("limit", "-2");
+        request.addParameter("level", "WARN");
         service.doGet(request, response);
         assertEquals(400, response.getStatus());
     }
@@ -60,6 +62,7 @@ public class TestGetLogs {
         MockHttpServletResponse response = new MockHttpServletResponse();
         LogsServlet service = new LogsServlet();
         request.addParameter("limit", "lim");
+        request.addParameter("level", "WARN");
         service.doGet(request, response);
         assertEquals(400, response.getStatus());
     }
@@ -71,6 +74,7 @@ public class TestGetLogs {
         MockHttpServletResponse response = new MockHttpServletResponse();
         LogsServlet service = new LogsServlet();
         request.addParameter("level", "test");
+        request.addParameter("limit", "3");
         service.doGet(request, response);
         assertEquals(400, response.getStatus());
     }

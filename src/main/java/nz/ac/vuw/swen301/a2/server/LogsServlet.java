@@ -33,7 +33,6 @@ public class LogsServlet extends HttpServlet {
             resp.sendError(400);
             return;
         }
-
         int limit;
         try {
             limit = Integer.parseInt(req.getParameter("limit"));
