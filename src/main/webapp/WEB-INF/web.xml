@@ -4,11 +4,11 @@
 
 <web-app>
   <servlet>
-    <servlet-name>UserAgentServlet</servlet-name>
-    <servlet-class>nz.ac.vuw.swen301.a2.server.UserAgentDetectorServlet</servlet-class>
+    <servlet-name>LogsServlet</servlet-name>
+    <servlet-class>nz.ac.vuw.swen301.a2.server.LogsServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>UserAgentServlet</servlet-name>
-    <url-pattern>/whatsyourbrowser</url-pattern>
+    <servlet-name>LogsServlet</servlet-name>
+    <url-pattern>/logs</url-pattern>
   </servlet-mapping>
 </web-app>
