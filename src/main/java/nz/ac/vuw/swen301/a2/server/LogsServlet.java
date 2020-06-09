@@ -118,6 +118,20 @@ public class LogsServlet extends HttpServlet {
         JsonObject j = g.fromJson(LogEvent, JsonObject.class);
         boolean noErrorDetails;
         noErrorDetails = j.get("errorDetails") == null;
+
+        if (!noErrorDetails) {
+            if (j.get("errorDetails").isJsonPrimitive()) {
+                if (!j.getAsJsonPrimitive().isString()) {
+                    resp.sendError(400);
+                    return;
+                }
+            }
+            else {
+                resp.sendError(400);
+                return;
+            }
+        }
+
         if (j.get("id") == null || j.get("message") == null || j.get("timestamp") == null || j.get("thread") == null
         || j.get("logger") == null || j.get("level") == null) {
             resp.sendError(400);
@@ -141,99 +155,50 @@ public class LogsServlet extends HttpServlet {
             }
         }
 
-        if (j.get("id").isJsonPrimitive()) {
-            if (j.getAsJsonPrimitive().isString()) {
-                Pattern UUID = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
-                if(!UUID.matcher(j.get("id").toString()).matches()) {
-                    resp.sendError(400);
-                    return;
-                }
-                else {
-                    if (logs.size() > 0) {
-                        for (JsonObject jObj : logs) {
-                            if(jObj.get("id").equals(j.get("id"))) {
-                                resp.sendError(409);
-                                return;
-                            }
-                        }
+        if (j.get("id").isJsonPrimitive() && j.get("message").isJsonPrimitive() && j.get("timestamp").isJsonPrimitive() && j.get("thread").isJsonPrimitive() && j.get("logger").isJsonPrimitive() && j.get("level").isJsonPrimitive()) {
+            if (!j.get("id").getAsJsonPrimitive().isString() || !j.get("message").getAsJsonPrimitive().isString() || !j.get("timestamp").getAsJsonPrimitive().isString() || !j.get("thread").getAsJsonPrimitive().isString() || !j.get("logger").getAsJsonPrimitive().isString() || !j.get("level").getAsJsonPrimitive().isString()) {
+                resp.sendError(400);
+                return;
+            }
+        }
+        else {
+            resp.sendError(400);
+            return;
+        }
+        Pattern UUID = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+        if(!UUID.matcher(j.get("id").toString().substring(1, j.get("id").toString().length()-1)).matches()) {
+            resp.sendError(400);
+            return;
+        }
+        else {
+            if (logs.size() > 0) {
+                for (JsonObject jObj : logs) {
+                    if(jObj.get("id").equals(j.get("id"))) {
+                        resp.sendError(409);
+                        return;
                     }
                 }
             }
-            else {
-                resp.sendError(400);
-                return;
-            }
-        }
-        else {
-            resp.sendError(400);
-            return;
         }
 
-        if (j.get("message").isJsonPrimitive() && j.get("thread").isJsonPrimitive() && j.get("logger").isJsonPrimitive()) {
-            if (!j.get("message").getAsJsonPrimitive().isString() || !j.get("thread").getAsJsonPrimitive().isString() || !j.get("logger").getAsJsonPrimitive().isString()) {
-                resp.sendError(400);
-                return;
-            }
-        }
-        else {
-            resp.sendError(400);
-            return;
-        }
-
-        if (j.get("timestamp").isJsonPrimitive()) {
-            if (j.getAsJsonPrimitive().isString()) {
-                if(!j.get("timestamp").toString().matches("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")) {
-                    resp.sendError(400);
-                    return;
-                }
-            }
-            else {
-                resp.sendError(400);
-                return;
-            }
-        }
-        else {
+        if(!j.get("timestamp").toString().matches("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")) {
             resp.sendError(400);
             return;
         }
 
         boolean isValid = true;
-        if (j.get("timestamp").isJsonPrimitive()) {
-            if (j.getAsJsonPrimitive().isString()) {
-                for (levels l : levels.values()) {
-                    if(j.get("level").toString().equals(l.name())) {
-                        isValid = true;
-                        break;
-                    }
-                    isValid = false;
-                }
-                if (!isValid) {
-                    resp.sendError(400);
-                    return;
-                }
+        for (levels l : levels.values()) {
+            if(j.get("level").toString().equals(l.name())) {
+                isValid = true;
+                break;
             }
-            else {
-                resp.sendError(400);
-                return;
-            }
+            isValid = false;
         }
-        else {
+        if (!isValid) {
             resp.sendError(400);
             return;
         }
 
-        if (!noErrorDetails) {
-            if (j.get("errorDetails").isJsonPrimitive()) {
-                if (!j.getAsJsonPrimitive().isString()) {
-                    resp.sendError(400);
-                    return;
-                }
-            }
-            else {
-                resp.sendError(400);
-                return;
-            }
-        }
         logs.add(j);
         resp.setStatus(201);
     }
