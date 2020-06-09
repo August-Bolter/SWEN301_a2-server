@@ -164,8 +164,8 @@ public class TestPostLogs {
         newObj.addProperty("level", "ERROR");
         request.addParameter("LogEvent", newObj.toString());
         service.doPost(request, response);
-
         request.removeAllParameters();
+        response.reset();
         JsonObject newObj1 = new JsonObject();
         newObj1.addProperty("id", "d290f1ee-6c54-4b01-90e6-d701748f0851");
         newObj1.addProperty("message", "Everything running smoothly");
@@ -175,7 +175,7 @@ public class TestPostLogs {
         newObj1.addProperty("level", "WARN");
         request.addParameter("LogEvent", newObj1.toString());
         service.doPost(request, response);
-        assertEquals(400, response.getStatus());
+        assertEquals(409, response.getStatus());
     }
 
     /** This tests that an invalid response code is generated when timestamp of the log event of the request does not follow the specified date format */
@@ -198,7 +198,7 @@ public class TestPostLogs {
 
     /** This tests that an invalid response code is generated when level of the log event of the request is invalid (isn't one of the 'levels' enum values in LogsServlet) */
     @Test
-    public void InvalidResponseCodeTimeStampInvalidLevel() throws IOException {
+    public void InvalidResponseCodeInvalidLevel() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         LogsServlet service = new LogsServlet();

@@ -112,6 +112,7 @@ public class LogsServlet extends HttpServlet {
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(req.getParameter("LogEvent") == null) {
             resp.sendError(400);
+            return;
         }
         String LogEvent = req.getParameter("LogEvent");
         Gson g = new Gson();
@@ -121,86 +122,114 @@ public class LogsServlet extends HttpServlet {
 
         if (!noErrorDetails) {
             if (j.get("errorDetails").isJsonPrimitive()) {
-                if (!j.getAsJsonPrimitive().isString()) {
-                    resp.sendError(400);
+                if (!j.get("errorDetails").getAsJsonPrimitive().isString()) {
+                    if (resp.getStatus() != 400) {
+                        resp.sendError(400);
+                    }
                     return;
                 }
             }
             else {
-                resp.sendError(400);
+                if (resp.getStatus() != 400) {
+                    resp.sendError(400);
+                }
                 return;
             }
         }
 
         if (j.get("id") == null || j.get("message") == null || j.get("timestamp") == null || j.get("thread") == null
         || j.get("logger") == null || j.get("level") == null) {
-            resp.sendError(400);
+            if (resp.getStatus() != 400) {
+                resp.sendError(400);
+            }
             return;
         }
         if (j.get("id").isJsonNull() || j.get("message").isJsonNull() || j.get("timestamp").isJsonNull() || j.get("thread").isJsonNull()
                 || j.get("logger").isJsonNull() || j.get("level").isJsonNull()) {
-            resp.sendError(400);
+            if (resp.getStatus() != 400) {
+                resp.sendError(400);
+            }
             return;
         }
         if (noErrorDetails) {
             if (j.entrySet().size() != 6) {
-                resp.sendError(400);
+                if (resp.getStatus() != 400) {
+                    resp.sendError(400);
+                }
                 return;
             }
         }
         else {
             if (j.entrySet().size() != 7) {
-                resp.sendError(400);
+                if (resp.getStatus() != 400) {
+                    resp.sendError(400);
+                }
                 return;
             }
         }
 
         if (j.get("id").isJsonPrimitive() && j.get("message").isJsonPrimitive() && j.get("timestamp").isJsonPrimitive() && j.get("thread").isJsonPrimitive() && j.get("logger").isJsonPrimitive() && j.get("level").isJsonPrimitive()) {
             if (!j.get("id").getAsJsonPrimitive().isString() || !j.get("message").getAsJsonPrimitive().isString() || !j.get("timestamp").getAsJsonPrimitive().isString() || !j.get("thread").getAsJsonPrimitive().isString() || !j.get("logger").getAsJsonPrimitive().isString() || !j.get("level").getAsJsonPrimitive().isString()) {
-                resp.sendError(400);
+                if (resp.getStatus() != 400) {
+                    resp.sendError(400);
+                }
                 return;
             }
         }
         else {
-            resp.sendError(400);
+            if (resp.getStatus() != 400) {
+                resp.sendError(400);
+            }
             return;
         }
         Pattern UUID = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
         if(!UUID.matcher(j.get("id").toString().substring(1, j.get("id").toString().length()-1)).matches()) {
-            resp.sendError(400);
+            if (resp.getStatus() != 400) {
+                resp.sendError(400);
+            }
             return;
         }
         else {
             if (logs.size() > 0) {
                 for (JsonObject jObj : logs) {
-                    if(jObj.get("id").equals(j.get("id"))) {
-                        resp.sendError(409);
+                    if(jObj.get("id").toString().equals(j.get("id").toString())) {
+                        if (resp.getStatus() != 400) {
+                            resp.sendError(409);
+                        }
                         return;
                     }
                 }
             }
         }
-
-        if(!j.get("timestamp").toString().matches("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")) {
-            resp.sendError(400);
-            return;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        try {
+            format.parse(j.get("timestamp").toString().substring(1, j.get("timestamp").toString().length()-1));
+        } catch (ParseException e) {
+            if (resp.getStatus() != 400) {
+                resp.sendError(400);
+            }
+            e.printStackTrace();
         }
 
         boolean isValid = true;
         for (levels l : levels.values()) {
-            if(j.get("level").toString().equals(l.name())) {
+            if(j.get("level").toString().substring(1, j.get("level").toString().length()-1).equals(l.name())) {
                 isValid = true;
                 break;
             }
             isValid = false;
         }
         if (!isValid) {
-            resp.sendError(400);
+            if (resp.getStatus() != 400) {
+                resp.sendError(400);
+            }
             return;
         }
 
         logs.add(j);
-        resp.setStatus(201);
+        if (resp.getStatus() != 400 && resp.getStatus() != 409) {
+            resp.setStatus(201);
+        }
     }
 
     public void addTestingLogs() {
