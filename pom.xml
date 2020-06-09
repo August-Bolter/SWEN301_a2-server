@@ -81,6 +81,9 @@
           <webApp>
             <contextPath>/resthome4logs</contextPath>
           </webApp>
+          <stopPort>9966</stopPort>
+          <stopKey>foo</stopKey>
+          <stopWait>10</stopWait>
         </configuration>
       </plugin>
       <plugin>
