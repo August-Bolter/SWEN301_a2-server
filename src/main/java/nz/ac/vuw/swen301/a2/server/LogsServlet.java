@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * and retrieved from the server using doGet() */
 public class LogsServlet extends HttpServlet {
 
-    private static List<JsonObject> logs; //Logs stored on the server
+    public static List<JsonObject> logs; //Logs stored on the server
     enum levels { //All possible levels a log could have (ordered by priority)
         OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL
     }
@@ -229,7 +229,6 @@ public class LogsServlet extends HttpServlet {
             if (resp.getStatus() != 400) {
                 resp.sendError(400);
             }
-            e.printStackTrace();
         }
 
         boolean isValid = true;
@@ -265,36 +264,5 @@ public class LogsServlet extends HttpServlet {
         if (resp.getStatus() != 400 && resp.getStatus() != 409) { //We don't want to send more than one status/error
             resp.setStatus(201); //Assume an error hasn't occurred previously then send success code
         }
-    }
-
-    /** Adds 3 valid logs to the log database ('logs') of the server. This method is purely for testing purposes (TestGetLogs) */
-    public void addTestingLogs() {
-        JsonObject newObj = new JsonObject();
-        newObj.addProperty("id", "d290f1ee-6c54-4b01-90e6-d701748f0851");
-        newObj.addProperty("message", "Everything running smoothly");
-        newObj.addProperty("timestamp", "2019-07-29T09:12:33.001Z");
-        newObj.addProperty("thread", "main");
-        newObj.addProperty("logger", "com.example.Foo");
-        newObj.addProperty("level", "INFO");
-
-        JsonObject newObj1 = new JsonObject();
-        newObj1.addProperty("id", "e290f1ee-6c54-4b01-90e6-d701748f0851");
-        newObj1.addProperty("message", "Threat received");
-        newObj1.addProperty("timestamp", "2020-04-29T09:12:33.001Z");
-        newObj1.addProperty("thread", "main");
-        newObj1.addProperty("logger", "com.example.Foo");
-        newObj1.addProperty("level", "WARN");
-
-        JsonObject newObj2 = new JsonObject();
-        newObj2.addProperty("id", "c290f1ee-6c54-4b01-90e6-d701748f0851");
-        newObj2.addProperty("message", "Unexpected encounter");
-        newObj2.addProperty("timestamp", "2020-03-29T09:12:33.001Z");
-        newObj2.addProperty("thread", "main");
-        newObj2.addProperty("logger", "com.example.Foo");
-        newObj2.addProperty("level", "ERROR");
-
-        logs.add(newObj);
-        logs.add(newObj1);
-        logs.add(newObj2);
     }
 }

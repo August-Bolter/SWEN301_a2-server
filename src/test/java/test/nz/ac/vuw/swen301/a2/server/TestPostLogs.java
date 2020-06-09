@@ -1,4 +1,4 @@
-package nz.ac.vuw.swen301.a2.server;
+package test.nz.ac.vuw.swen301.a2.server;
 
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
@@ -6,11 +6,12 @@ import nz.ac.vuw.swen301.a2.server.LogsServlet;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
-import java.text.ParseException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+/** Class that contains tests for testing doPost() in LogsServlet */
 public class TestPostLogs {
 
     @Test
@@ -286,11 +287,13 @@ public class TestPostLogs {
         newObj.addProperty("logger", "com.example.Foo");
         newObj.addProperty("level", "WARN");
         request.addParameter("LogEvent", newObj.toString());
+        service.doPost(request, response);
+        request.removeAllParameters();
 
         JsonObject newObj1 = new JsonObject();
         newObj1.addProperty("id", "a290f1ee-6c54-4b01-90e6-d701748f0851");
         newObj1.addProperty("message", "Everything running smoothly");
-        newObj1.addProperty("timestamp", "2019-07-29T09:12:33.001Z");
+        newObj1.addProperty("timestamp", "2020-07-29T09:12:33.001Z");
         newObj1.addProperty("thread", "main");
         newObj1.addProperty("logger", "com.example.Foo");
         newObj1.addProperty("level", "WARN");
