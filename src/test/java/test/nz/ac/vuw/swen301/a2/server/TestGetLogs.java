@@ -11,8 +11,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /** Class that contains the tests for the doGet() method in LogsServlet. */
 public class TestGetLogs {
@@ -34,7 +33,7 @@ public class TestGetLogs {
         MockHttpServletResponse response = new MockHttpServletResponse();
         LogsServlet service = new LogsServlet();
         /* Adding level parameter but not adding limit parameter */
-        request.addParameter("level", "WARN");
+        request.setParameter("level", "WARN");
         service.doGet(request, response);
         assertEquals(400, response.getStatus());
     }
@@ -46,7 +45,7 @@ public class TestGetLogs {
         MockHttpServletResponse response = new MockHttpServletResponse();
         LogsServlet service = new LogsServlet();
         /* Adding limit parameter but not adding level parameter */
-        request.addParameter("limit", "42");
+        request.setParameter("limit", "42");
         service.doGet(request, response);
         assertEquals(400, response.getStatus());
     }
@@ -88,8 +87,8 @@ public class TestGetLogs {
         LogsServlet.logs.add(newObj1);
         LogsServlet.logs.add(newObj2);
 
-        request.addParameter("limit", "-2"); //Limit can't be negative
-        request.addParameter("level", "WARN");
+        request.setParameter("limit", "-2"); //Limit can't be negative
+        request.setParameter("level", "WARN");
         service.doGet(request, response);
         LogsServlet.logs.clear(); //Clearing the logs since the logs variable is static
         assertEquals(400, response.getStatus());
@@ -101,8 +100,8 @@ public class TestGetLogs {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         LogsServlet service = new LogsServlet();
-        request.addParameter("limit", "lim"); //Limit has to be an integer
-        request.addParameter("level", "WARN");
+        request.setParameter("limit", "lim"); //Limit has to be an integer
+        request.setParameter("level", "WARN");
         service.doGet(request, response);
         assertEquals(400, response.getStatus());
     }
@@ -113,8 +112,8 @@ public class TestGetLogs {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         LogsServlet service = new LogsServlet();
-        request.addParameter("level", "test"); //Level has to be part of 'levels' enum in LogsServlet
-        request.addParameter("limit", "3");
+        request.setParameter("level", "test"); //Level has to be part of 'levels' enum in LogsServlet
+        request.setParameter("limit", "3");
         service.doGet(request, response);
         assertEquals(400, response.getStatus());
     }
@@ -156,8 +155,8 @@ public class TestGetLogs {
         LogsServlet.logs.add(newObj1);
         LogsServlet.logs.add(newObj2);
 
-        request.addParameter("limit", "3");
-        request.addParameter("level", "INFO");
+        request.setParameter("limit", "3");
+        request.setParameter("level", "INFO");
         service.doGet(request, response);
         LogsServlet.logs.clear();
         assertEquals(200, response.getStatus()); //200 is the success response code
@@ -201,8 +200,8 @@ public class TestGetLogs {
         LogsServlet.logs.add(newObj1);
         LogsServlet.logs.add(newObj2);
 
-        request.addParameter("limit", "3");
-        request.addParameter("level", "INFO");
+        request.setParameter("limit", "3");
+        request.setParameter("level", "INFO");
         service.doGet(request, response);
         LogsServlet.logs.clear();
         String result = response.getContentAsString(); //Getting logs as a Json string
@@ -240,10 +239,11 @@ public class TestGetLogs {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         LogsServlet service = new LogsServlet();
-        request.addParameter("limit", "3");
-        request.addParameter("level", "INFO");
+        request.setParameter("limit", "3");
+        request.setParameter("level", "INFO");
         service.doGet(request, response);
-        assertEquals("application/json", response.getContentType()); //Content type should be application/json since Json String is being returned
+        assertNotNull(response.getContentType());
+        assertTrue(response.getContentType().startsWith("application/json")); //Content type should be application/json since Json String is being returned
     }
 
     @Test
@@ -283,8 +283,8 @@ public class TestGetLogs {
         LogsServlet.logs.add(newObj1);
         LogsServlet.logs.add(newObj2);
 
-        request.addParameter("limit", "2");
-        request.addParameter("level", "INFO");
+        request.setParameter("limit", "2");
+        request.setParameter("level", "INFO");
         service.doGet(request, response);
         LogsServlet.logs.clear();
         String result = response.getContentAsString();
@@ -330,8 +330,8 @@ public class TestGetLogs {
         LogsServlet.logs.add(newObj1);
         LogsServlet.logs.add(newObj2);
 
-        request.addParameter("limit", "3");
-        request.addParameter("level", "WARN");
+        request.setParameter("limit", "3");
+        request.setParameter("level", "WARN");
         service.doGet(request, response);
         LogsServlet.logs.clear();
         String result = response.getContentAsString();
@@ -380,8 +380,8 @@ public class TestGetLogs {
         LogsServlet.logs.add(newObj1);
         LogsServlet.logs.add(newObj2);
 
-        request.addParameter("limit", "1");
-        request.addParameter("level", "WARN");
+        request.setParameter("limit", "1");
+        request.setParameter("level", "WARN");
         service.doGet(request, response);
         LogsServlet.logs.clear();
         String result = response.getContentAsString();

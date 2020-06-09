@@ -7,7 +7,9 @@ import com.google.gson.JsonObject;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -122,15 +124,30 @@ public class LogsServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        /* Checking that logEvent parameter exists */
-        if(req.getParameter("LogEvent") == null) {
+
+        /* Checking that content type of post request is correct */
+        if (req.getContentType() == null || !req.getContentType().startsWith("application/json")) {
             resp.sendError(400);
             return;
         }
-        String LogEvent = req.getParameter("LogEvent");
+
+        /* Converting body content into string */
+        BufferedReader reader = req.getReader();
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line);
+        }
+
+        /* Checking that content has been set */
+        if(sb.toString().length() == 0) {
+            resp.sendError(400);
+            return;
+        }
+
         Gson g = new Gson();
         /* Converting Json String to JsonObject */
-        JsonObject j = g.fromJson(LogEvent, JsonObject.class);
+        JsonObject j = g.fromJson(sb.toString(), JsonObject.class);
         boolean noErrorDetails; //Error details is an optional field (depends on level of log, and even then its still optional)
         noErrorDetails = j.get("errorDetails") == null;
 
@@ -247,21 +264,20 @@ public class LogsServlet extends HttpServlet {
             return;
         }
 
-        logs.add(j); //If log is completely valid (passes all the above checks) then add it to the list
-        logs.sort((o1, o2) -> { //Sort logs by timestamp (this is to guarantee logs are sorted by timestamp when logs returned in doGet() are limited by limit parameter)
-            try {
-                Date dateO1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(o1.get("timestamp").toString().substring(1, o1.get("timestamp").toString().length()-1));
-                Date dateO2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(o2.get("timestamp").toString().substring(1, o2.get("timestamp").toString().length()-1));
-                if (dateO1.after(dateO2)) return -1;
-                else if (dateO2.after(dateO1)) return 1;
-            }
-            catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return 0;
-        });
-
         if (resp.getStatus() != 400 && resp.getStatus() != 409) { //We don't want to send more than one status/error
+            logs.add(j); //If log is completely valid (passes all the above checks) then add it to the list
+            logs.sort((o1, o2) -> { //Sort logs by timestamp (this is to guarantee logs are sorted by timestamp when logs returned in doGet() are limited by limit parameter)
+                try {
+                    Date dateO1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(o1.get("timestamp").toString().substring(1, o1.get("timestamp").toString().length()-1));
+                    Date dateO2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(o2.get("timestamp").toString().substring(1, o2.get("timestamp").toString().length()-1));
+                    if (dateO1.after(dateO2)) return -1;
+                    else if (dateO2.after(dateO1)) return 1;
+                }
+                catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            });
             resp.setStatus(201); //Assume an error hasn't occurred previously then send success code
         }
     }
