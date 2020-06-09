@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * and retrieved from the server using doGet() */
 public class LogsServlet extends HttpServlet {
 
-    private List<JsonObject> logs; //Logs stored on the server
+    private static List<JsonObject> logs; //Logs stored on the server
     enum levels { //All possible levels a log could have (ordered by priority)
         OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL
     }
