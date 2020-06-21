@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -106,7 +105,6 @@ public class LogsServlet extends HttpServlet {
             }
             return 0;
         });
-
         /* Number of logs being greater than 1 means a JsonArray must be returned not a JsonObject */
         if (output.size() > 1) {
             for (JsonObject j : output) {
@@ -124,7 +122,6 @@ public class LogsServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
         /* Checking that content type of post request is correct */
         if (req.getContentType() == null || !req.getContentType().startsWith("application/json")) {
             resp.sendError(400);
