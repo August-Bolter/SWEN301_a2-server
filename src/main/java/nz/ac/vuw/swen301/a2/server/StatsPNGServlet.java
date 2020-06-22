@@ -7,8 +7,10 @@ import java.io.IOException;
 
 public class StatsPNGServlet extends HttpServlet {
     @Override
-    /** Returns an image of a bar-chart where the bars represent different the number of logs at different levels. */
+    /** Returns a PNG image of a bar-chart where the bars represent different the number of logs at different levels. */
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
+        if (LogsServlet.logs.size() > 0) {
+            resp.setContentType("image/png"); //Since output will be a PNG image
+        }
     }
 }

@@ -81,9 +81,9 @@ public class StatsServlet extends HttpServlet {
             int logIndex = 0; //For determining whether we are at the end of the table
             for (String date : dates) {
                 if (logIndex + 1 == dates.size()) { //We are at the end of the table so add \n
-                    results[index][0] = "<th>" + date + "\n" + "</th>" + "</tr>"; //Adding the date to the CSV table
+                    results[index][0] = "<th>" + date + "</th>" + "</tr>"; //Adding the date to the CSV table
                 } else { //Otherwise add \t
-                    results[index][0] = "<th>" + date + "\t" + "</th>";
+                    results[index][0] = "<th>" + date + "</th>";
                 }
                 index++;
             }
@@ -91,19 +91,19 @@ public class StatsServlet extends HttpServlet {
             /* Adding the logger to the CSV table */
             index = 1;
             for (String logger : rows) {
-                results[0][index] = "<tr>" + "<td>" + logger + "\t" + "</td>"; //<td> = data
+                results[0][index] = "<tr>" + "<td>" + logger + "</td>"; //<td> = data
                 index++;
             }
 
             /* Adding the level to the CSV table */
             for (String level : rows) {
-                results[0][index] = "<tr>" + "<td>" + level + "\t" + "</td>";
+                results[0][index] = "<tr>" + "<td>" + level + "</td>";
                 index++;
             }
 
             /* Adding the thread to the CSV table */
             for (String thread : rows) {
-                results[0][index] = "<tr>" + "<td>" + thread + "\t" + "</td>";
+                results[0][index] = "<tr>" + "<td>" + thread + "</td>";
                 index++;
             }
 
@@ -112,29 +112,22 @@ public class StatsServlet extends HttpServlet {
                 /* Calculating the CSV value for the logger */
                 int row = rows.indexOf(log.get("logger").toString().substring(1, log.get("logger").toString().length() - 1)); //Getting row index of CSV table based off list
                 int col = dates.indexOf(log.get("timestamp").toString().substring(1, 11)); //Getting col index of CSV table based off list
-                String endChars;
-                /* Checking if we are the end of the CSV table */
-                if (col + 1 == dates.size()) {
-                    endChars = "\n";
-                } else {
-                    endChars = "\t";
-                }
                 /* If no value is previously in the cell then the value should be 1. */
                 if (results[col + 1][row + 1] == null) {
-                    if (endChars.equals("\n")) {
-                        results[col + 1][row + 1] = "<td>" + "1" + endChars + "</td>" + "</tr>";
+                    if (col + 1 == dates.size()) { //Checking if we are at the end of the CSV table
+                        results[col + 1][row + 1] = "<td>" + "1" + "</td>" + "</tr>";
                     }
                     else {
-                        results[col + 1][row + 1] = "<td>" + "1" + endChars + "</td>";
+                        results[col + 1][row + 1] = "<td>" + "1" + "</td>";
                     }
                 }
                 /* Otherwise it should be old value + 1 */
                 else {
-                    if (endChars.equals("\n")) {
-                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "").replaceAll("<td>", "").replaceAll("</td>", "").replaceAll("</tr>", "")) + 1) + endChars + "</td>" + "</tr>";
+                    if (col + 1 == dates.size()) {
+                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll("<td>", "").replaceAll("</td>", "").replaceAll("</tr>", "")) + 1) + "</td>" + "</tr>";
                     }
                     else {
-                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "").replaceAll("<td>", "").replaceAll("</td>", "")) + 1) + endChars + "</td>";
+                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll("<td>", "").replaceAll("</td>", "")) + 1) + "</td>";
                     }
                 }
 
@@ -142,20 +135,20 @@ public class StatsServlet extends HttpServlet {
                 row = rows.indexOf(log.get("level").toString().substring(1, log.get("level").toString().length() - 1));
                 /* If no value is previously in the cell then the value should be 1. */
                 if (results[col + 1][row + 1] == null) {
-                    if (endChars.equals("\n")) {
-                        results[col + 1][row + 1] = "<td>" + "1" + endChars + "</td>" + "</tr>";
+                    if (col + 1 == dates.size()) { //Checking if we are at the end of the CSV table
+                        results[col + 1][row + 1] = "<td>" + "1" + "</td>" + "</tr>";
                     }
                     else {
-                        results[col + 1][row + 1] = "<td>" + "1" + endChars + "</td>";
+                        results[col + 1][row + 1] = "<td>" + "1" + "</td>";
                     }
                 }
                 /* Otherwise it should be old value + 1 */
                 else {
-                    if (endChars.equals("\n")) {
-                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "").replaceAll("<td>", "").replaceAll("</td>", "").replaceAll("</tr>", "")) + 1) + endChars + "</td>" + "</tr>";
+                    if (col + 1 == dates.size()) {
+                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll("<td>", "").replaceAll("</td>", "").replaceAll("</tr>", "")) + 1) + "</td>" + "</tr>";
                     }
                     else {
-                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "").replaceAll("<td>", "").replaceAll("</td>", "")) + 1) + endChars + "</td>";
+                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll("<td>", "").replaceAll("</td>", "")) + 1) + "</td>";
                     }
                 }
 
@@ -163,20 +156,20 @@ public class StatsServlet extends HttpServlet {
                 row = rows.indexOf(log.get("thread").toString().substring(1, log.get("thread").toString().length() - 1));
                 /* If no value is previously in the cell then the value should be 1. */
                 if (results[col + 1][row + 1] == null) {
-                    if (endChars.equals("\n")) {
-                        results[col + 1][row + 1] = "<td>" + "1" + endChars + "</td>" + "</tr>";
+                    if (col + 1 == dates.size()) { //Checking if we are at the end of the CSV table
+                        results[col + 1][row + 1] = "<td>" + "1" + "</td>" + "</tr>";
                     }
                     else {
-                        results[col + 1][row + 1] = "<td>" + "1" + endChars + "</td>";
+                        results[col + 1][row + 1] = "<td>" + "1" + "</td>";
                     }
                 }
                 /* Otherwise it should be old value + 1 */
                 else {
-                    if (endChars.equals("\n")) {
-                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "").replaceAll("<td>", "").replaceAll("</td>", "").replaceAll("</tr>", "")) + 1) + endChars + "</td>" + "</tr>";
+                    if (col + 1 == dates.size()) {
+                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll("<td>", "").replaceAll("</td>", "").replaceAll("</tr>", "")) + 1) + "</td>" + "</tr>";
                     }
                     else {
-                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "").replaceAll("<td>", "").replaceAll("</td>", "")) + 1) + endChars + "</td>";
+                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll("<td>", "").replaceAll("</td>", "")) + 1) + "</td>";
                     }
                 }
             }
