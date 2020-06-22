@@ -71,7 +71,7 @@ public class StatsServlet extends HttpServlet {
                 }
             }
 
-            String[][] results = new String[dates.size()][rows.size()]; //List of CSV table values (number of log values (logger, thread, level) that match date)
+            String[][] results = new String[dates.size()+1][rows.size()+1]; //List of CSV table values (number of log values (logger, thread, level) that match date)
             results[0][0] = "<tr>" + "<th>" + "name\t" + "</th>";
 
             /* Adding the timestamp to the CSV table */
@@ -110,7 +110,7 @@ public class StatsServlet extends HttpServlet {
                 /* Calculating the CSV value for the logger */
                 int row = rows.indexOf(log.get("logger").toString().substring(1, log.get("logger").toString().length() - 1)); //Getting row index of CSV table based off list
                 int col = dates.indexOf(log.get("timestamp").toString().substring(1, 11)); //Getting col index of CSV table based off list
-                String endChars = "";
+                String endChars;
                 /* Checking if we are the end of the CSV table */
                 if (col + 1 == dates.size()) {
                     endChars = "\n";
@@ -119,27 +119,63 @@ public class StatsServlet extends HttpServlet {
                 }
                 /* If no value is previously in the cell then the value should be 1. */
                 if (results[col + 1][row + 1] == null) {
-                    results[col + 1][row + 1] = "1" + endChars;
+                    if (endChars.equals("\n")) {
+                        results[col + 1][row + 1] = "<td>" + "1" + endChars + "</td>" + "</tr>";
+                    }
+                    else {
+                        results[col + 1][row + 1] = "<td>" + "1" + endChars + "</td>";
+                    }
                 }
                 /* Otherwise it should be old value + 1 */
                 else {
-                    results[col + 1][row + 1] = (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "")) + 1) + endChars;
+                    if (endChars.equals("\n")) {
+                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "").replaceAll("<td>", "").replaceAll("</td>", "").replaceAll("</tr>", "")) + 1) + endChars + "</td>" + "</tr>";
+                    }
+                    else {
+                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "").replaceAll("<td>", "").replaceAll("</td>", "")) + 1) + endChars + "</td>";
+                    }
                 }
 
                 /* Calculating the CSV value for the level */
                 row = rows.indexOf(log.get("level").toString().substring(1, log.get("level").toString().length() - 1));
+                /* If no value is previously in the cell then the value should be 1. */
                 if (results[col + 1][row + 1] == null) {
-                    results[col + 1][row + 1] = "1" + endChars;
-                } else {
-                    results[col + 1][row + 1] = (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "")) + 1) + endChars;
+                    if (endChars.equals("\n")) {
+                        results[col + 1][row + 1] = "<td>" + "1" + endChars + "</td>" + "</tr>";
+                    }
+                    else {
+                        results[col + 1][row + 1] = "<td>" + "1" + endChars + "</td>";
+                    }
+                }
+                /* Otherwise it should be old value + 1 */
+                else {
+                    if (endChars.equals("\n")) {
+                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "").replaceAll("<td>", "").replaceAll("</td>", "").replaceAll("</tr>", "")) + 1) + endChars + "</td>" + "</tr>";
+                    }
+                    else {
+                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "").replaceAll("<td>", "").replaceAll("</td>", "")) + 1) + endChars + "</td>";
+                    }
                 }
 
                 /* Calculating the CSV value for the thread */
                 row = rows.indexOf(log.get("thread").toString().substring(1, log.get("thread").toString().length() - 1));
+                /* If no value is previously in the cell then the value should be 1. */
                 if (results[col + 1][row + 1] == null) {
-                    results[col + 1][row + 1] = "1" + endChars;
-                } else {
-                    results[col + 1][row + 1] = (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "")) + 1) + endChars;
+                    if (endChars.equals("\n")) {
+                        results[col + 1][row + 1] = "<td>" + "1" + endChars + "</td>" + "</tr>";
+                    }
+                    else {
+                        results[col + 1][row + 1] = "<td>" + "1" + endChars + "</td>";
+                    }
+                }
+                /* Otherwise it should be old value + 1 */
+                else {
+                    if (endChars.equals("\n")) {
+                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "").replaceAll("<td>", "").replaceAll("</td>", "").replaceAll("</tr>", "")) + 1) + endChars + "</td>" + "</tr>";
+                    }
+                    else {
+                        results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll(endChars, "").replaceAll("<td>", "").replaceAll("</td>", "")) + 1) + endChars + "</td>";
+                    }
                 }
             }
 

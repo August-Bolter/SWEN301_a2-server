@@ -59,7 +59,7 @@ public class StatsCSVServlet extends HttpServlet {
                 }
             }
 
-            String[][] results = new String[dates.size()][rows.size()]; //List of CSV table values (number of log values (logger, thread, level) that match date)
+            String[][] results = new String[dates.size()+1][rows.size()+1]; //List of CSV table values (number of log values (logger, thread, level) that match date)
             results[0][0] = "name\t";
 
             /* Adding the timestamp to the CSV table */
@@ -99,7 +99,7 @@ public class StatsCSVServlet extends HttpServlet {
                 /* Calculating the CSV value for the logger */
                 int row = rows.indexOf(log.get("logger").toString().substring(1, log.get("logger").toString().length()-1)); //Getting row index of CSV table based off list
                 int col = dates.indexOf(log.get("timestamp").toString().substring(1, 11)); //Getting col index of CSV table based off list
-                String endChars = "";
+                String endChars;
                 /* Checking if we are the end of the CSV table */
                 if (col+1 == dates.size()) {
                     endChars = "\n";
