@@ -20,8 +20,9 @@ public class StatsServlet extends HttpServlet {
      *  @param resp The servlets response */
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (LogsServlet.logs.size() > 0) {
-            resp.setContentType("text/html"); //Since output will be CSV text
+            resp.setContentType("text/html"); //Since output will be a html website
             PrintWriter writer = resp.getWriter();
+            /* Adding basic HTML structure */
             writer.append("<html>");
             writer.append("<head>");
             writer.append("<title>");
@@ -72,6 +73,7 @@ public class StatsServlet extends HttpServlet {
             }
 
             String[][] results = new String[dates.size()+1][rows.size()+1]; //List of CSV table values (number of log values (logger, thread, level) that match date)
+            /* Since <tr> = row and <th> = header */
             results[0][0] = "<tr>" + "<th>" + "name\t" + "</th>";
 
             /* Adding the timestamp to the CSV table */
@@ -89,7 +91,7 @@ public class StatsServlet extends HttpServlet {
             /* Adding the logger to the CSV table */
             index = 1;
             for (String logger : rows) {
-                results[0][index] = "<tr>" + "<td>" + logger + "\t" + "</td>";
+                results[0][index] = "<tr>" + "<td>" + logger + "\t" + "</td>"; //<td> = data
                 index++;
             }
 
@@ -183,6 +185,10 @@ public class StatsServlet extends HttpServlet {
             String output = Arrays.stream(results).flatMap(Arrays::stream).collect(Collectors.joining());
             String formattedOutput = output.replaceAll("null", "0");
             writer.append(formattedOutput);
+            /* Closing tags */
+            writer.append("</table>");
+            writer.append("</body>");
+            writer.append("</html>");
             resp.setStatus(200);
 
         }
