@@ -11,6 +11,10 @@
     <servlet-name>StatsCSVServlet</servlet-name>
     <servlet-class>nz.ac.vuw.swen301.a2.server.StatsCSVServlet</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>StatsServlet</servlet-name>
+    <servlet-class>nz.ac.vuw.swen301.a2.server.StatsServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>LogsServlet</servlet-name>
     <url-pattern>/logs</url-pattern>
@@ -18,5 +22,9 @@
   <servlet-mapping>
     <servlet-name>StatsCSVServlet</servlet-name>
     <url-pattern>/statscsv</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>StatsServlet</servlet-name>
+    <url-pattern>/stats</url-pattern>
   </servlet-mapping>
 </web-app>
