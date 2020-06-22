@@ -139,6 +139,7 @@ public class StatsCSVServlet extends HttpServlet {
             String output = Arrays.stream(results).flatMap(Arrays::stream).collect(Collectors.joining());
             String formattedOutput = output.replaceAll("null", "0");
             writer.append(formattedOutput);
+            resp.setStatus(200);
 
         }
     }
