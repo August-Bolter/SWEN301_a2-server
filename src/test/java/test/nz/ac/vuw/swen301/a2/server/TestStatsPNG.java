@@ -7,9 +7,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /** Test cases for the StatsPNGServlet class */
 public class TestStatsPNG {
@@ -55,6 +61,13 @@ public class TestStatsPNG {
         service.doGet(request, response);
         assertEquals("image/png", response.getContentType()); //Checking content type is PNG
         assertEquals(200, response.getStatus()); //Checking response code is correct
+
+        /* Testing that the image exists and has the correct size */
+        InputStream is = new ByteArrayInputStream(response.getContentAsByteArray());
+        BufferedImage image = ImageIO.read(is);
+        assertNotNull(image);
+        assertEquals(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2, image.getWidth());
+        assertEquals(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2, image.getHeight());
     }
 
     /** Testing that log statistics are generated if logs exist on the server (multiple logs exists on server) */
@@ -80,7 +93,7 @@ public class TestStatsPNG {
         newObj1.addProperty("timestamp", "2019-07-29T09:12:33.001Z");
         newObj1.addProperty("thread", "main");
         newObj1.addProperty("logger", "com.example.Bar");
-        newObj1.addProperty("level", "WARN");
+        newObj1.addProperty("level", "ERROR");
 
         JsonObject newObj2 = new JsonObject();
         newObj2.addProperty("id", "c290f1ee-6c54-4b01-90e6-d701748f0851");
@@ -88,7 +101,7 @@ public class TestStatsPNG {
         newObj2.addProperty("timestamp", "2020-03-29T09:12:33.001Z");
         newObj2.addProperty("thread", "concurrent");
         newObj2.addProperty("logger", "com.example.Baz");
-        newObj2.addProperty("level", "ERROR");
+        newObj2.addProperty("level", "WARN");
 
         LogsServlet.logs.add(newObj);
         LogsServlet.logs.add(newObj1);
@@ -97,5 +110,12 @@ public class TestStatsPNG {
         service.doGet(request, response);
         assertEquals("image/png", response.getContentType());
         assertEquals(200, response.getStatus());
+
+        /* Testing that the image exists and has the correct size */
+        InputStream is = new ByteArrayInputStream(response.getContentAsByteArray());
+        BufferedImage image = ImageIO.read(is);
+        assertNotNull(image);
+        assertEquals(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2, image.getWidth());
+        assertEquals(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2, image.getHeight());
     }
 }

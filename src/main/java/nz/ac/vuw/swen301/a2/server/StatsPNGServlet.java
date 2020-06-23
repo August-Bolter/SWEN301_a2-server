@@ -13,10 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class StatsPNGServlet extends HttpServlet {
 
@@ -26,8 +24,23 @@ public class StatsPNGServlet extends HttpServlet {
         if (LogsServlet.logs != null && req != null && resp != null) {
             if (LogsServlet.logs.size() > 0) {
                 resp.setContentType("image/png"); //Since output will be a PNG image
-                Map<String, Integer> levelToLogs = new HashMap<String, Integer>(); //Storing levels and logs relationship
+                Map<String, Integer> levelToLogs = new LinkedHashMap<String, Integer>(); //Storing levels and logs relationship
                 List<JsonObject> logs = new ArrayList<JsonObject>(LogsServlet.logs); //Deep copy of logs
+
+                /* Copying enums from LogsServlet */
+                List<String> levelEnums = new ArrayList<String>();
+                for (LogsServlet.levels level : LogsServlet.levels.values()) {
+                    levelEnums.add(level.name());
+                }
+
+                /* Sorting logs based on level (OFF logs are first in the list, then FATAL, then ERROR etc...) */
+                logs.sort((o1, o2) -> { //Sort logs by timestamp (this is to guarantee logs are sorted by timestamp when logs returned in doGet() are limited by limit parameter)
+                    if (levelEnums.indexOf(o1.get("level").toString().substring(1, o1.get("level").toString().length()-1)) <
+                            levelEnums.indexOf(o2.get("level").toString().substring(1, o2.get("level").toString().length()-1))) return -1;
+                    else if (levelEnums.indexOf(o1.get("level").toString().substring(1, o1.get("level").toString().length()-1)) >
+                            levelEnums.indexOf(o2.get("level").toString().substring(1, o2.get("level").toString().length()-1))) return 1;
+                    return 0;
+                });
 
                 /* Storing initial values in map */
                 for (JsonObject log : logs) {
@@ -50,7 +63,7 @@ public class StatsPNGServlet extends HttpServlet {
 
                 /* Exporting bar chart as a PNG to the response stream */
                 OutputStream out = resp.getOutputStream();
-                ChartUtilities.writeChartAsPNG(out, barChart, Toolkit.getDefaultToolkit().getScreenSize().width / 2, Toolkit.getDefaultToolkit().getScreenSize().height / 2);
+                ChartUtilities.writeChartAsPNG(out, barChart, Toolkit.getDefaultToolkit().getScreenSize().width/2, Toolkit.getDefaultToolkit().getScreenSize().height/2);
                 out.close();
             }
         }

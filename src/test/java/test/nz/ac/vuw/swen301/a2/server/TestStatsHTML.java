@@ -13,8 +13,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /** Test cases for the StatsServlet class */
 public class TestStatsHTML {
@@ -62,17 +61,17 @@ public class TestStatsHTML {
         assertEquals(200, response.getStatus());
         Document doc = Jsoup.parse(response.getContentAsString());
         /* Checking html document has the basic structure */
-        assertNotEquals(null, doc.select("html"));
-        assertNotEquals(null, doc.select("head"));
-        assertNotEquals(null, doc.select("title"));
+        assertNotNull(doc.select("html"));
+        assertNotNull(doc.select("head"));
+        assertNotNull(doc.select("title"));
         assertEquals("Log statistics", doc.select("title").text());
-        assertNotEquals(null, doc.select("body"));
+        assertNotNull(doc.select("body"));
         /* Checking that table exists */
-        assertNotEquals(null, doc.select("table"));
+        assertNotNull(doc.select("table"));
         Element table = doc.select("table").get(0);
         /* Checking that table rows exist */
         Elements rows = table.select("tr");
-        assertNotEquals(null, rows);
+        assertNotNull(rows);
         Element rowHeader = rows.get(0);
         /* Checking that table headers exist and are correct */
         Elements colsHeader = rowHeader.select("th");
@@ -141,17 +140,17 @@ public class TestStatsHTML {
         assertEquals(200, response.getStatus());
         Document doc = Jsoup.parse(response.getContentAsString());
         /* Checking html document has the basic structure */
-        assertNotEquals(null, doc.select("html"));
-        assertNotEquals(null, doc.select("head"));
-        assertNotEquals(null, doc.select("title"));
+        assertNotNull(doc.select("html"));
+        assertNotNull(doc.select("head"));
+        assertNotNull(doc.select("title"));
         assertEquals("Log statistics", doc.select("title").text());
-        assertNotEquals(null, doc.select("body"));
+        assertNotNull(doc.select("body"));
         /* Checking that table exists */
-        assertNotEquals(null, doc.select("table"));
+        assertNotNull(doc.select("table"));
         Element table = doc.select("table").get(0);
         /* Checking that table rows exist */
         Elements rows = table.select("tr");
-        assertNotEquals(null, rows);
+        assertNotNull(rows);
         Element rowHeader = rows.get(0);
         /* Checking that table headers exist and are correct */
         Elements colsHeader = rowHeader.select("th");
@@ -254,17 +253,17 @@ public class TestStatsHTML {
         assertEquals(200, response.getStatus());
         Document doc = Jsoup.parse(response.getContentAsString());
         /* Checking html document has the basic structure */
-        assertNotEquals(null, doc.select("html"));
-        assertNotEquals(null, doc.select("head"));
-        assertNotEquals(null, doc.select("title"));
+        assertNotNull(doc.select("html"));
+        assertNotNull(doc.select("head"));
+        assertNotNull(doc.select("title"));
         assertEquals("Log statistics", doc.select("title").text());
-        assertNotEquals(null, doc.select("body"));
+        assertNotNull(doc.select("body"));
         /* Checking that table exists */
-        assertNotEquals(null, doc.select("table"));
+        assertNotNull(doc.select("table"));
         Element table = doc.select("table").get(0);
         /* Checking that table rows exist */
         Elements rows = table.select("tr");
-        assertNotEquals(null, rows);
+        assertNotNull(rows);
         Element rowHeader = rows.get(0);
         /* Checking that table headers exist and are correct */
         Elements colsHeader = rowHeader.select("th");
