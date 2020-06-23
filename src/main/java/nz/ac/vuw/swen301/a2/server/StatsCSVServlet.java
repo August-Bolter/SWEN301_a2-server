@@ -157,7 +157,7 @@ public class StatsCSVServlet extends HttpServlet {
                         if (col == dates.size() && row != rows.size()) { //Then we have reach the final column of the table (but not the final row)
                             writer.append(results[col][row]).append("\n"); //So add a newline character instead of a tab character
                         }
-                        else if (col == dates.size() && row == rows.size()) { //If we are at the very end of the table
+                        else if (col == dates.size()) { //If we are at the very end of the table
                             writer.append(results[col][row]);
                         }
                         else {

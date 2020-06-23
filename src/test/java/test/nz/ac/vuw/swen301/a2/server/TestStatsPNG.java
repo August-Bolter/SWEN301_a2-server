@@ -56,9 +56,10 @@ public class TestStatsPNG {
         assertEquals("image/png", response.getContentType());
         assertEquals(200, response.getStatus());
     }
+
     @Test
     /** Testing that log statistics are generated if logs exist on the server (multiple logs exists on server) */
-    public void testMultipleLogsEmpty() throws IOException {
+    public void testMultipleLogsStats() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsPNGServlet service = new StatsPNGServlet();
@@ -97,5 +98,4 @@ public class TestStatsPNG {
         assertEquals("image/png", response.getContentType());
         assertEquals(200, response.getStatus());
     }
-
 }
