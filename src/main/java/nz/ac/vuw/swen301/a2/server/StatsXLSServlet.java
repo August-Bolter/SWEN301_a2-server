@@ -3,11 +3,14 @@ package nz.ac.vuw.swen301.a2.server;
 import com.google.gson.JsonObject;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -135,10 +138,20 @@ public class StatsXLSServlet extends HttpServlet {
                 HSSFSheet sheet = workbook.createSheet();
 
                 for (int row = 0; row < rows.size()+1; row++) {
+                    Row rowXLS = sheet.createRow(row); //Create row in XLS sheet
                     for (int col = 0; col < dates.size()+1; col++) {
-
+                        if (results[col][row] == null) {
+                            results[col][row] = "0";
+                        }
+                        Cell cellXLS = rowXLS.createCell(col); //Create XLS cell in XLS row
+                        cellXLS.setCellValue(results[col][row]); //Setting correct value for XLS cell
                     }
                 }
+
+                OutputStream out = resp.getOutputStream();
+                workbook.write(out);
+                out.flush();
+                out.close();
             }
         }
     }
