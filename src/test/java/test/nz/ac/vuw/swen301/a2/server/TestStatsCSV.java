@@ -8,6 +8,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -62,10 +63,23 @@ public class TestStatsCSV {
 
         LogsServlet.logs.add(newObj);
         service.doGet(request, response);
-        assertEquals("name\t2019-07-29\n" +
-                "com.example.Foo\t1\n" +
-                "INFO\t1\n" +
-                "main\t1", response.getContentAsString());
+        assertEquals("text/csv", response.getContentType());
+        int colNum = 2;
+        int rowNum = 4;
+        String[][] logDetails = new String[rowNum][colNum];
+        String[] rows = response.getContentAsString().split("\n");
+        int col = 0;
+        int row = 0;
+        for (String r : rows) {
+            String[] cols = r.split("\t");
+            for (String c : cols) {
+                logDetails[row][col] = c;
+                col++;
+            }
+            row++;
+            col = 0;
+        }
+        assertEquals("[[name, 2019-07-29], [com.example.Foo, 1], [INFO, 1], [main, 1]]", Arrays.deepToString(logDetails));
     }
     @Test
     /** Testing that log statistics are generated if logs exist on the server (multiple logs exists on server) */
@@ -105,6 +119,7 @@ public class TestStatsCSV {
         LogsServlet.logs.add(newObj2);
 
         service.doGet(request, response);
+        assertEquals("text/csv", response.getContentType());
         assertEquals("name\t2019-07-29\t2020-03-29\n" +
                 "com.example.Bar\t1\t0\n" +
                 "com.example.Foo\t1\t0\n" +
@@ -114,6 +129,22 @@ public class TestStatsCSV {
                 "ERROR\t0\t1\n" +
                 "main\t2\t0\n" +
                 "concurrent\t0\t1", response.getContentAsString());
+        int colNum = 3;
+        int rowNum = 9;
+        String[][] logDetails = new String[rowNum][colNum];
+        String[] rows = response.getContentAsString().split("\n");
+        int col = 0;
+        int row = 0;
+        for (String r : rows) {
+            String[] cols = r.split("\t");
+            for (String c : cols) {
+                logDetails[row][col] = c;
+                col++;
+            }
+            row++;
+            col = 0;
+        }
+        assertEquals("[[name, 2019-07-29, 2020-03-29], [com.example.Bar, 1, 0], [com.example.Foo, 1, 0], [com.example.Baz, 0, 1], [WARN, 1, 0], [INFO, 1, 0], [ERROR, 0, 1], [main, 2, 0], [concurrent, 0, 1]]", Arrays.deepToString(logDetails));
     }
 
 }
