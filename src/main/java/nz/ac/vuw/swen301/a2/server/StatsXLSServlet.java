@@ -1,6 +1,8 @@
 package nz.ac.vuw.swen301.a2.server;
 
 import com.google.gson.JsonObject;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,26 +13,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class StatsServlet extends HttpServlet {
+public class StatsXLSServlet extends HttpServlet {
     @Override
-    /** Returns an html table of log statistics, the table has days represented as columns, and the rows represent loggers, log levels and threads. The cells at the intersection of rows and columns represent the number of log events for the respective category
-     *  @param req The users request
-     *  @param resp The servlets response */
+    /** Returns the log statistics (table format) as an excel file. The table has days represented as columns, and the rows represent loggers, log levels and threads. The cells at the intersection of rows and columns represent the number of log events for the respective category */
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (LogsServlet.logs != null) {
             if (LogsServlet.logs.size() > 0) {
-                resp.setContentType("text/html"); //Since output will be a html website
-                PrintWriter writer = resp.getWriter();
-
-                /* Adding basic HTML structure */
-                writer.append("<html>");
-                writer.append("<head>");
-                writer.append("<title>");
-                writer.append("Log statistics");
-                writer.append("</title>");
-                writer.append("</head>");
-                writer.append("<body>");
-                writer.append("<table>");
+                resp.setContentType("application/vnd.ms-excel"); //Since output will be an excel file
+                resp.setCharacterEncoding("UTF-8");
 
                 ArrayList<String> dates = new ArrayList<String>(); //List of log dates
                 ArrayList<String> rows = new ArrayList<String>(); //List of log values (logger, level and thread)
@@ -141,27 +131,14 @@ public class StatsServlet extends HttpServlet {
                 }
 
                 /* Sending 2d array */
-                for (int row = 0; row < rows.size()+1; row++) {
-                    writer.append("<tr>"); //New row
-                    for (int col = 0; col < dates.size()+1; col++) {
-                        if (results[col][row] == null) {
-                            results[col][row] = "0";
-                        }
-                        if (row == 0) { //Then its a table header
-                            writer.append("<th>").append(results[col][row]).append("</th>");
-                        }
-                        else { //Otherwise its table data
-                            writer.append("<td>").append(results[col][row]).append("</td>");
-                        }
-                    }
-                    writer.append("</tr>"); //Finish the row
-                }
-                /* Closing tags */
-                writer.append("</table>");
-                writer.append("</body>");
-                writer.append("</html>");
-                resp.setStatus(200);
+                HSSFWorkbook workbook = new HSSFWorkbook();
+                HSSFSheet sheet = workbook.createSheet();
 
+                for (int row = 0; row < rows.size()+1; row++) {
+                    for (int col = 0; col < dates.size()+1; col++) {
+
+                    }
+                }
             }
         }
     }

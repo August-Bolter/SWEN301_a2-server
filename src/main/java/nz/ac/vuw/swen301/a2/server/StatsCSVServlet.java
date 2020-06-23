@@ -5,14 +5,11 @@ import com.google.gson.JsonObject;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /** This class is used for obtaining log statistics in CSV format. */
 public class StatsCSVServlet extends HttpServlet {
@@ -140,8 +137,8 @@ public class StatsCSVServlet extends HttpServlet {
                         if (results[col][row] == null) {
                             results[col][row] = "0";
                         }
-                        if (col == dates.size()) {
-                            writer.append(results[col][row]).append("\n");
+                        if (col == dates.size()) { //Then we have reach the final column of the table
+                            writer.append(results[col][row]).append("\n"); //So add a newline character instead of a tab character
                         }
                         else {
                             writer.append(results[col][row]).append("\t");
