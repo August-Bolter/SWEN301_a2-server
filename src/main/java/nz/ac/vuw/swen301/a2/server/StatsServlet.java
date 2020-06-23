@@ -76,47 +76,33 @@ public class StatsServlet extends HttpServlet {
 
                 String[][] results = new String[dates.size() + 1][rows.size() + 1]; //List of CSV table values (number of log values (logger, thread, level) that match date)
                 /* Since <tr> = row and <th> = header */
-                results[0][0] = "<tr>" + "<th>" + "name\t" + "</th>";
+                results[0][0] = "name";
 
                 /* Adding the timestamp to the CSV table */
                 int index = 1;
                 int logIndex = 0; //For determining whether we are at the end of the table
                 for (String date : dates) {
-                    if (logIndex + 1 == dates.size()) { //We are at the end of the table so add \n
-                        results[index][0] = "<th>" + date + "</th>" + "</tr>"; //Adding the date to the CSV table
-                    } else { //Otherwise add \t
-                        results[index][0] = "<th>" + date + "</th>";
-                    }
-                    logIndex++;
+                    results[index][0] = date; //Adding the date to the CSV table
                     index++;
                 }
 
                 /* Adding the logger to the CSV table */
                 index = 1;
-                for (String logger : rows) {
-                    results[0][index] = "<tr>" + "<td>" + logger + "</td>"; //<td> = data
+                for (int i = 0; i < loggerIndex; i++) {
+                    results[0][index] = rows.get(i); //<td> = data
                     index++;
-                    if (index-1 == loggerIndex) {
-                        break;
-                    }
                 }
 
                 /* Adding the level to the CSV table */
-                for (String level : rows) {
-                    results[0][index] = "<tr>" + "<td>" + level + "</td>";
+                for (int i = loggerIndex; i < levelIndex; i++) {
+                    results[0][index] = rows.get(i);
                     index++;
-                    if (index-1 == levelIndex) {
-                        break;
-                    }
                 }
 
                 /* Adding the thread to the CSV table */
-                for (String thread : rows) {
-                    results[0][index] = "<tr>" + "<td>" + thread + "</td>";
+                for (int i = levelIndex; i < threadIndex; i++) {
+                    results[0][index] = rows.get(i);
                     index++;
-                    if (index-1 == threadIndex) {
-                        break;
-                    }
                 }
 
                 /* Determining CSV table values */
@@ -126,64 +112,52 @@ public class StatsServlet extends HttpServlet {
                     int col = dates.indexOf(log.get("timestamp").toString().substring(1, 11)); //Getting col index of CSV table based off list
                     /* If no value is previously in the cell then the value should be 1. */
                     if (results[col + 1][row + 1] == null) {
-                        if (col + 1 == dates.size()) { //Checking if we are at the end of the CSV table
-                            results[col + 1][row + 1] = "<td>" + "1" + "</td>" + "</tr>";
-                        } else {
-                            results[col + 1][row + 1] = "<td>" + "1" + "</td>";
-                        }
+                        results[col + 1][row + 1] = "1";
                     }
                     /* Otherwise it should be old value + 1 */
                     else {
-                        if (col + 1 == dates.size()) {
-                            results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll("<td>", "").replaceAll("</td>", "").replaceAll("</tr>", "")) + 1) + "</td>" + "</tr>";
-                        } else {
-                            results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll("<td>", "").replaceAll("</td>", "")) + 1) + "</td>";
-                        }
+                        results[col + 1][row + 1] = Integer.toString(Integer.parseInt(results[col + 1][row + 1]) + 1);
                     }
 
                     /* Calculating the CSV value for the level */
                     row = rows.indexOf(log.get("level").toString().substring(1, log.get("level").toString().length() - 1));
                     /* If no value is previously in the cell then the value should be 1. */
                     if (results[col + 1][row + 1] == null) {
-                        if (col + 1 == dates.size()) { //Checking if we are at the end of the CSV table
-                            results[col + 1][row + 1] = "<td>" + "1" + "</td>" + "</tr>";
-                        } else {
-                            results[col + 1][row + 1] = "<td>" + "1" + "</td>";
-                        }
+                        results[col + 1][row + 1] = "1";
                     }
                     /* Otherwise it should be old value + 1 */
                     else {
-                        if (col + 1 == dates.size()) {
-                            results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll("<td>", "").replaceAll("</td>", "").replaceAll("</tr>", "")) + 1) + "</td>" + "</tr>";
-                        } else {
-                            results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll("<td>", "").replaceAll("</td>", "")) + 1) + "</td>";
-                        }
+                        results[col + 1][row + 1] = Integer.toString(Integer.parseInt(results[col + 1][row + 1]) + 1);
                     }
 
                     /* Calculating the CSV value for the thread */
                     row = rows.indexOf(log.get("thread").toString().substring(1, log.get("thread").toString().length() - 1));
                     /* If no value is previously in the cell then the value should be 1. */
                     if (results[col + 1][row + 1] == null) {
-                        if (col + 1 == dates.size()) { //Checking if we are at the end of the CSV table
-                            results[col + 1][row + 1] = "<td>" + "1" + "</td>" + "</tr>";
-                        } else {
-                            results[col + 1][row + 1] = "<td>" + "1" + "</td>";
-                        }
+                        results[col + 1][row + 1] = "1";
                     }
                     /* Otherwise it should be old value + 1 */
                     else {
-                        if (col + 1 == dates.size()) {
-                            results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll("<td>", "").replaceAll("</td>", "").replaceAll("</tr>", "")) + 1) + "</td>" + "</tr>";
-                        } else {
-                            results[col + 1][row + 1] = "<td>" + (Integer.parseInt(results[col + 1][row + 1].replaceAll("<td>", "").replaceAll("</td>", "")) + 1) + "</td>";
-                        }
+                        results[col + 1][row + 1] = Integer.toString(Integer.parseInt(results[col + 1][row + 1]) + 1);
                     }
                 }
 
-                /* Converting 2d array into String that doesn't include the array formatting (excludes the brackets and the commas) */
-                String output = Arrays.stream(results).flatMap(Arrays::stream).collect(Collectors.joining());
-                String formattedOutput = output.replaceAll("null", "0");
-                writer.append(formattedOutput);
+                /* Sending 2d array */
+                for (int row = 0; row < rows.size()+1; row++) {
+                    writer.append("<tr>");
+                    for (int col = 0; col < dates.size()+1; col++) {
+                        if (results[col][row] == null) {
+                            results[col][row] = "0";
+                        }
+                        if (row == 0) {
+                            writer.append("<th>").append(results[col][row]).append("</th>");
+                        }
+                        else {
+                            writer.append("<td>").append(results[col][row]).append("</td>");
+                        }
+                    }
+                    writer.append("</tr>");
+                }
                 /* Closing tags */
                 writer.append("</table>");
                 writer.append("</body>");
