@@ -120,15 +120,6 @@ public class TestStatsCSV {
 
         service.doGet(request, response);
         assertEquals("text/csv", response.getContentType());
-        assertEquals("name\t2019-07-29\t2020-03-29\n" +
-                "com.example.Bar\t1\t0\n" +
-                "com.example.Foo\t1\t0\n" +
-                "com.example.Baz\t0\t1\n" +
-                "WARN\t1\t0\n" +
-                "INFO\t1\t0\n" +
-                "ERROR\t0\t1\n" +
-                "main\t2\t0\n" +
-                "concurrent\t0\t1", response.getContentAsString());
         int colNum = 3;
         int rowNum = 9;
         String[][] logDetails = new String[rowNum][colNum];
