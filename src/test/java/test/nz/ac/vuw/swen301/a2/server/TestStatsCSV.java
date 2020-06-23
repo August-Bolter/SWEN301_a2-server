@@ -14,8 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Test cases for the StatsCSVServlet class */
 public class TestStatsCSV {
-    @Test
+
     /** Testing that no log statistics are generated if request is null */
+    @Test
     public void testRequestNull() throws IOException {
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsCSVServlet service = new StatsCSVServlet();
@@ -23,24 +24,24 @@ public class TestStatsCSV {
         assertEquals(0, response.getContentAsString().length());
     }
 
-    @Test
     /** Testing that no log statistics are generated if no logs exist on the server */
+    @Test
     public void testLogsEmpty() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsCSVServlet service = new StatsCSVServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
         service.doGet(request, response);
         assertEquals(0, response.getContentAsString().length());
     }
 
-    @Test
     /** Testing that log statistics are generated if logs exist on the server (just one log exists on server) */
+    @Test
     public void testOneLogStats() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsCSVServlet service = new StatsCSVServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
 
         /* Creating JsonObjects to test */
         JsonObject newObj = new JsonObject();
@@ -54,6 +55,7 @@ public class TestStatsCSV {
         LogsServlet.logs.add(newObj);
         service.doGet(request, response);
         assertEquals("text/csv", response.getContentType());
+        /* Converting returned data back into a 2d array */
         int colNum = 2;
         int rowNum = 4;
         String[][] logDetails = new String[rowNum][colNum];
@@ -69,17 +71,18 @@ public class TestStatsCSV {
             row++;
             col = 0;
         }
+        /* Checking 2d array is correct and that the correct response code has been generated */
         assertEquals("[[name, 2019-07-29], [com.example.Foo, 1], [INFO, 1], [main, 1]]", Arrays.deepToString(logDetails));
         assertEquals(200, response.getStatus());
     }
 
-    @Test
     /** Testing that log statistics are generated if logs exist on the server (multiple logs exists on server, and that one of the log table values gets incremented) */
+    @Test
     public void testMultipleLogsStatsOneIncrement() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsCSVServlet service = new StatsCSVServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
 
         /* Creating JsonObjects to test */
         JsonObject newObj = new JsonObject();
@@ -112,6 +115,7 @@ public class TestStatsCSV {
 
         service.doGet(request, response);
         assertEquals("text/csv", response.getContentType());
+        /* Converting returned data back into a 2d array */
         int colNum = 3;
         int rowNum = 9;
         String[][] logDetails = new String[rowNum][colNum];
@@ -127,17 +131,18 @@ public class TestStatsCSV {
             row++;
             col = 0;
         }
+        /* Checking 2d array is correct and that the correct response code has been generated */
         assertEquals("[[name, 2019-07-29, 2020-03-29], [com.example.Bar, 1, 0], [com.example.Foo, 1, 0], [com.example.Baz, 0, 1], [WARN, 1, 0], [INFO, 1, 0], [ERROR, 0, 1], [main, 2, 0], [concurrent, 0, 1]]", Arrays.deepToString(logDetails));
         assertEquals(200, response.getStatus());
     }
 
-    @Test
     /** Testing that log statistics are generated if logs exist on the server (multiple logs exists on server, and that more than one of the log table values gets incremented) */
+    @Test
     public void testMultipleLogsStatsMultipleIncrements() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsCSVServlet service = new StatsCSVServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
 
         /* Creating JsonObjects to test */
         JsonObject newObj = new JsonObject();
@@ -170,6 +175,7 @@ public class TestStatsCSV {
 
         service.doGet(request, response);
         assertEquals("text/csv", response.getContentType());
+        /* Converting returned data back into a 2d array */
         int colNum = 3;
         int rowNum = 8;
         String[][] logDetails = new String[rowNum][colNum];
@@ -185,6 +191,7 @@ public class TestStatsCSV {
             row++;
             col = 0;
         }
+        /* Checking 2d array is correct and that the correct response code has been generated */
         assertEquals("[[name, 2019-07-29, 2020-03-29], [com.example.Foo, 2, 0], [com.example.Baz, 0, 1], [WARN, 2, 0], [ERROR, 0, 1], [main, 1, 0], [daemon, 1, 0], [concurrent, 0, 1]]", Arrays.deepToString(logDetails));
         assertEquals(200, response.getStatus());
     }

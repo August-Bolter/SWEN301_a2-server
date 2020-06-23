@@ -62,12 +62,16 @@
       <artifactId>jsoup</artifactId>
       <version>1.13.1</version>
     </dependency>
-
   </dependencies>
 
   <build>
     <finalName>a2-server</finalName>
     <plugins>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>4.0.4</version>
+      </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -106,6 +110,27 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>3.2.2</version>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.7.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.0.0</version>
+      </plugin>
     </plugins>
   </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>4.0.4</version>
+      </plugin>
+    </plugins>
+  </reporting>
+
 </project>

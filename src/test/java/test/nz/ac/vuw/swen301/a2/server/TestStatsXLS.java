@@ -16,10 +16,11 @@ import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/** Test cases for the StatsCSVServlet class */
+/** Test cases for the StatsXLSServlet class */
 public class TestStatsXLS {
-    @Test
+
     /** Testing that no log statistics are generated if request is null */
+    @Test
     public void testRequestNull() throws IOException {
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsXLSServlet service = new StatsXLSServlet();
@@ -27,24 +28,24 @@ public class TestStatsXLS {
         assertEquals(0, response.getContentAsString().length());
     }
 
-    @Test
     /** Testing that no log statistics are generated if no logs exist on the server */
+    @Test
     public void testLogsEmpty() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsXLSServlet service = new StatsXLSServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
         service.doGet(request, response);
         assertEquals(0, response.getContentAsString().length());
     }
 
-    @Test
     /** Testing that log statistics are generated if logs exist on the server (just one log exists on server) */
+    @Test
     public void testOneLogStats() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsXLSServlet service = new StatsXLSServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
 
         /* Creating JsonObjects to test */
         JsonObject newObj = new JsonObject();
@@ -60,30 +61,38 @@ public class TestStatsXLS {
         assertEquals("application/vnd.ms-excel", response.getContentType());
         assertEquals(200, response.getStatus());
 
+        /* Parsing response data to HSSFWorkbook */
         InputStream is = new ByteArrayInputStream(response.getContentAsByteArray());
         HSSFWorkbook workbook = new HSSFWorkbook(is);
         HSSFSheet sheet = workbook.getSheetAt(0);
+
+        /* Checking row 1 data is correct */
         HSSFRow row = sheet.getRow(0);
         assertEquals("name", row.getCell(0).toString());
         assertEquals(newObj.get("timestamp").toString().substring(1, 11), row.getCell(1).toString());
+
+        /* Checking row 2 data is correct etc... */
         row = sheet.getRow(1);
         assertEquals(newObj.get("logger").toString().substring(1, newObj.get("logger").toString().length()-1), row.getCell(0).toString());
         assertEquals("1", row.getCell(1).toString());
+
         row = sheet.getRow(2);
         assertEquals(newObj.get("level").toString().substring(1, newObj.get("level").toString().length()-1), row.getCell(0).toString());
         assertEquals("1", row.getCell(1).toString());
+
         row = sheet.getRow(3);
         assertEquals(newObj.get("thread").toString().substring(1, newObj.get("thread").toString().length()-1), row.getCell(0).toString());
         assertEquals("1", row.getCell(1).toString());
 
     }
-    @Test
+
     /** Testing that log statistics are generated if logs exist on the server (multiple logs exists on server, and that one of the log table values gets incremented) */
+    @Test
     public void testMultipleLogsStatsOneIncrement() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsXLSServlet service = new StatsXLSServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
 
         /* Creating JsonObjects to test */
         JsonObject newObj = new JsonObject();
@@ -118,14 +127,18 @@ public class TestStatsXLS {
         assertEquals("application/vnd.ms-excel", response.getContentType());
         assertEquals(200, response.getStatus());
 
+        /* Parsing response data to HSSFWorkbook */
         InputStream is = new ByteArrayInputStream(response.getContentAsByteArray());
         HSSFWorkbook workbook = new HSSFWorkbook(is);
         HSSFSheet sheet = workbook.getSheetAt(0);
+
+        /* Checking row 1 data is correct */
         HSSFRow row = sheet.getRow(0);
         assertEquals("name", row.getCell(0).toString());
         assertEquals(newObj.get("timestamp").toString().substring(1, 11), row.getCell(1).toString());
         assertEquals(newObj2.get("timestamp").toString().substring(1, 11), row.getCell(2).toString());
 
+        /* Checking row 2 data is correct etc... */
         row = sheet.getRow(1);
         assertEquals(newObj1.get("logger").toString().substring(1, newObj1.get("logger").toString().length()-1), row.getCell(0).toString());
         assertEquals("1", row.getCell(1).toString());
@@ -167,13 +180,13 @@ public class TestStatsXLS {
         assertEquals("1", row.getCell(2).toString());
     }
 
-    @Test
     /** Testing that log statistics are generated if logs exist on the server (multiple logs exists on server, and that more than one of the log table values gets incremented) */
+    @Test
     public void testMultipleLogsStatsMultipleIncrements() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsXLSServlet service = new StatsXLSServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
 
         /* Creating JsonObjects to test */
         JsonObject newObj = new JsonObject();
@@ -208,14 +221,18 @@ public class TestStatsXLS {
         assertEquals("application/vnd.ms-excel", response.getContentType());
         assertEquals(200, response.getStatus());
 
+        /* Parsing response data to HSSFWorkbook */
         InputStream is = new ByteArrayInputStream(response.getContentAsByteArray());
         HSSFWorkbook workbook = new HSSFWorkbook(is);
         HSSFSheet sheet = workbook.getSheetAt(0);
+
+        /* Checking row 1 data is correct */
         HSSFRow row = sheet.getRow(0);
         assertEquals("name", row.getCell(0).toString());
         assertEquals(newObj.get("timestamp").toString().substring(1, 11), row.getCell(1).toString());
         assertEquals(newObj2.get("timestamp").toString().substring(1, 11), row.getCell(2).toString());
 
+        /* Checking row 2 data is correct etc... */
         row = sheet.getRow(1);
         assertEquals(newObj.get("logger").toString().substring(1, newObj.get("logger").toString().length()-1), row.getCell(0).toString());
         assertEquals("2", row.getCell(1).toString());

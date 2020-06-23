@@ -2,7 +2,6 @@ package test.nz.ac.vuw.swen301.a2.server;
 
 import com.google.gson.JsonObject;
 import nz.ac.vuw.swen301.a2.server.LogsServlet;
-import nz.ac.vuw.swen301.a2.server.StatsCSVServlet;
 import nz.ac.vuw.swen301.a2.server.StatsServlet;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,15 +12,15 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-/** Test cases for the StatsHTMLServlet class */
+/** Test cases for the StatsServlet class */
 public class TestStatsHTML {
-    @Test
+
     /** Testing that no log statistics are generated if request is null */
+    @Test
     public void testRequestNull() throws IOException {
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsServlet service = new StatsServlet();
@@ -29,24 +28,24 @@ public class TestStatsHTML {
         assertEquals(0, response.getContentAsString().length());
     }
 
-    @Test
     /** Testing that no log statistics are generated if no logs exist on the server */
+    @Test
     public void testLogsEmpty() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsServlet service = new StatsServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
         service.doGet(request, response);
         assertEquals(0, response.getContentAsString().length());
     }
 
-    @Test
     /** Testing that log statistics are generated if logs exist on the server (just one log exists on server) */
+    @Test
     public void testOneLogStats() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsServlet service = new StatsServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
 
         /* Creating JsonObjects to test */
         JsonObject newObj = new JsonObject();
@@ -62,40 +61,51 @@ public class TestStatsHTML {
         assertEquals("text/html", response.getContentType());
         assertEquals(200, response.getStatus());
         Document doc = Jsoup.parse(response.getContentAsString());
+        /* Checking html document has the basic structure */
         assertNotEquals(null, doc.select("html"));
         assertNotEquals(null, doc.select("head"));
         assertNotEquals(null, doc.select("title"));
         assertEquals("Log statistics", doc.select("title").text());
         assertNotEquals(null, doc.select("body"));
+        /* Checking that table exists */
         assertNotEquals(null, doc.select("table"));
         Element table = doc.select("table").get(0);
+        /* Checking that table rows exist */
         Elements rows = table.select("tr");
         assertNotEquals(null, rows);
         Element rowHeader = rows.get(0);
+        /* Checking that table headers exist and are correct */
         Elements colsHeader = rowHeader.select("th");
         assertEquals("name", colsHeader.get(0).text());
         assertEquals(newObj.get("timestamp").toString().substring(1, 11), colsHeader.get(1).text());
+
+        /* Checking that table rows are correct */
+
+        /* Checking row 1 */
         Element row = rows.get(1);
         Elements cols = row.select("td");
         assertEquals(newObj.get("logger").toString().substring(1, newObj.get("logger").toString().length()-1), cols.get(0).text());
         assertEquals("1", cols.get(1).text());
+
+        /* Checking row 2 etc../ */
         row = rows.get(2);
         cols = row.select("td");
         assertEquals(newObj.get("level").toString().substring(1, newObj.get("level").toString().length()-1), cols.get(0).text());
         assertEquals("1", cols.get(1).text());
+
         row = rows.get(3);
         cols = row.select("td");
         assertEquals(newObj.get("thread").toString().substring(1, newObj.get("thread").toString().length()-1), cols.get(0).text());
         assertEquals("1", cols.get(1).text());
     }
 
-    @Test
     /** Testing that log statistics are generated if logs exist on the server (multiple logs exists on server, and that one of the log table values gets incremented) */
+    @Test
     public void testMultipleLogsStatsOneIncrement() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsServlet service = new StatsServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
 
         /* Creating JsonObjects to test */
         JsonObject newObj = new JsonObject();
@@ -130,27 +140,35 @@ public class TestStatsHTML {
         assertEquals("text/html", response.getContentType());
         assertEquals(200, response.getStatus());
         Document doc = Jsoup.parse(response.getContentAsString());
+        /* Checking html document has the basic structure */
         assertNotEquals(null, doc.select("html"));
         assertNotEquals(null, doc.select("head"));
         assertNotEquals(null, doc.select("title"));
         assertEquals("Log statistics", doc.select("title").text());
         assertNotEquals(null, doc.select("body"));
+        /* Checking that table exists */
         assertNotEquals(null, doc.select("table"));
         Element table = doc.select("table").get(0);
+        /* Checking that table rows exist */
         Elements rows = table.select("tr");
         assertNotEquals(null, rows);
         Element rowHeader = rows.get(0);
+        /* Checking that table headers exist and are correct */
         Elements colsHeader = rowHeader.select("th");
         assertEquals("name", colsHeader.get(0).text());
         assertEquals(newObj.get("timestamp").toString().substring(1, 11), colsHeader.get(1).text());
         assertEquals(newObj2.get("timestamp").toString().substring(1, 11), colsHeader.get(2).text());
 
+        /* Checking that table rows are correct */
+
+        /* Checking row 1 */
         Element row = rows.get(1);
         Elements cols = row.select("td");
         assertEquals(newObj1.get("logger").toString().substring(1, newObj1.get("logger").toString().length()-1), cols.get(0).text());
         assertEquals("1", cols.get(1).text());
         assertEquals("0", cols.get(2).text());
 
+        /* Checking row 2 etc... */
         row = rows.get(2);
         cols = row.select("td");
         assertEquals(newObj.get("logger").toString().substring(1, newObj.get("logger").toString().length()-1), cols.get(0).text());
@@ -194,13 +212,13 @@ public class TestStatsHTML {
         assertEquals("1", cols.get(2).text());
     }
 
-    @Test
     /** Testing that log statistics are generated if logs exist on the server (multiple logs exists on server, and that more than one of the log table values gets incremented) */
+    @Test
     public void testMultipleLogsStatsMultipleIncrements() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsServlet service = new StatsServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
 
         /* Creating JsonObjects to test */
         JsonObject newObj = new JsonObject();
@@ -235,27 +253,35 @@ public class TestStatsHTML {
         assertEquals("text/html", response.getContentType());
         assertEquals(200, response.getStatus());
         Document doc = Jsoup.parse(response.getContentAsString());
+        /* Checking html document has the basic structure */
         assertNotEquals(null, doc.select("html"));
         assertNotEquals(null, doc.select("head"));
         assertNotEquals(null, doc.select("title"));
         assertEquals("Log statistics", doc.select("title").text());
         assertNotEquals(null, doc.select("body"));
+        /* Checking that table exists */
         assertNotEquals(null, doc.select("table"));
         Element table = doc.select("table").get(0);
+        /* Checking that table rows exist */
         Elements rows = table.select("tr");
         assertNotEquals(null, rows);
         Element rowHeader = rows.get(0);
+        /* Checking that table headers exist and are correct */
         Elements colsHeader = rowHeader.select("th");
         assertEquals("name", colsHeader.get(0).text());
         assertEquals(newObj.get("timestamp").toString().substring(1, 11), colsHeader.get(1).text());
         assertEquals(newObj2.get("timestamp").toString().substring(1, 11), colsHeader.get(2).text());
 
+        /* Checking that table rows are correct */
+
+        /* Checking row 1 */
         Element row = rows.get(1);
         Elements cols = row.select("td");
         assertEquals(newObj.get("logger").toString().substring(1, newObj.get("logger").toString().length()-1), cols.get(0).text());
         assertEquals("2", cols.get(1).text());
         assertEquals("0", cols.get(2).text());
 
+        /* Checking row 2 etc... */
         row = rows.get(2);
         cols = row.select("td");
         assertEquals(newObj2.get("logger").toString().substring(1, newObj2.get("logger").toString().length()-1), cols.get(0).text());

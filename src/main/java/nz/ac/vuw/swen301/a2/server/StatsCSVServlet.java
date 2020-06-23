@@ -17,10 +17,10 @@ import java.util.List;
 /** This class is used for obtaining log statistics in CSV format. */
 public class StatsCSVServlet extends HttpServlet {
 
-    @Override
     /** Returns a csv-encoded log statistics, the table has days represented as columns, and the rows represent loggers, log levels and threads. The cells at the intersection of rows and columns represent the number of log events for the respective category
      *  @param req The users request
      *  @param resp The servlets response */
+    @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (LogsServlet.logs != null && req != null && resp != null) {
             if (LogsServlet.logs.size() > 0) {
@@ -87,7 +87,6 @@ public class StatsCSVServlet extends HttpServlet {
 
                 /* Adding the timestamp to the CSV table */
                 int index = 1;
-                int logIndex = 0; //For determining whether we are at the end of the table
                 for (String date : dates) {
                     results[index][0] = date; //Adding the date to the CSV table
                     index++;
@@ -154,7 +153,7 @@ public class StatsCSVServlet extends HttpServlet {
                         if (results[col][row] == null) {
                             results[col][row] = "0";
                         }
-                        if (col == dates.size() && row != rows.size()) { //Then we have reach the final column of the table (but not the final row)
+                        if (col == dates.size() && row != rows.size()) { //Then we have reached the final column of the table (but not the final row)
                             writer.append(results[col][row]).append("\n"); //So add a newline character instead of a tab character
                         }
                         else if (col == dates.size()) { //If we are at the very end of the table

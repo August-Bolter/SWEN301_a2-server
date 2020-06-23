@@ -8,14 +8,14 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Test cases for the StatsPNGServlet class */
 public class TestStatsPNG {
-    @Test
+
     /** Testing that no log statistics are generated if request is null */
+    @Test
     public void testRequestNull() throws IOException {
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsPNGServlet service = new StatsPNGServlet();
@@ -23,24 +23,24 @@ public class TestStatsPNG {
         assertEquals(0, response.getContentAsString().length());
     }
 
-    @Test
     /** Testing that no log statistics are generated if no logs exist on the server */
+    @Test
     public void testLogsEmpty() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsPNGServlet service = new StatsPNGServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
         service.doGet(request, response);
         assertEquals(0, response.getContentAsString().length());
     }
 
-    @Test
     /** Testing that log statistics are generated if logs exist on the server (just one log exists on server) */
+    @Test
     public void testOneLogStats() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsPNGServlet service = new StatsPNGServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
 
         /* Creating JsonObjects to test */
         JsonObject newObj = new JsonObject();
@@ -53,17 +53,17 @@ public class TestStatsPNG {
 
         LogsServlet.logs.add(newObj);
         service.doGet(request, response);
-        assertEquals("image/png", response.getContentType());
-        assertEquals(200, response.getStatus());
+        assertEquals("image/png", response.getContentType()); //Checking content type is PNG
+        assertEquals(200, response.getStatus()); //Checking response code is correct
     }
 
-    @Test
     /** Testing that log statistics are generated if logs exist on the server (multiple logs exists on server) */
+    @Test
     public void testMultipleLogsStats() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         StatsPNGServlet service = new StatsPNGServlet();
-        LogsServlet server = new LogsServlet();
+        new LogsServlet();
 
         /* Creating JsonObjects to test */
         JsonObject newObj = new JsonObject();

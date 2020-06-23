@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /** Class that contains tests for testing doPost() in LogsServlet */
 public class TestPostLogs {
 
-    @Test
     /** This tests that an invalid response code is generated when a request is sent with no content body */
+    @Test
     public void testInvalidResponseCodeRequestNoBody() throws IOException {
         /* Creating mock request and response */
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -27,8 +27,8 @@ public class TestPostLogs {
         assertEquals(400, response.getStatus()); //400 is the failure response code
     }
 
-    @Test
     /** This tests that an invalid response code is generated when the request has no content type */
+    @Test
     public void testInvalidResponseCodeRequestNoContentType() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -46,8 +46,8 @@ public class TestPostLogs {
         assertEquals(400, response.getStatus());
     }
 
-    @Test
     /** This tests that an invalid response code is generated when the request has an invalid content type */
+    @Test
     public void testInvalidResponseCodeRequestInvalidContentType() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setContentType("text/plain");
@@ -66,8 +66,8 @@ public class TestPostLogs {
         assertEquals(400, response.getStatus());
     }
 
-    @Test
     /** This tests that an invalid response code is generated when the requests body content is missing a field (level field) */
+    @Test
     public void testInvalidResponseCodeMissingField() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();

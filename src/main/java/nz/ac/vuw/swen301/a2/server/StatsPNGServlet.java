@@ -19,8 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 public class StatsPNGServlet extends HttpServlet {
-    @Override
+
     /** Returns a PNG image of a bar-chart where the bars represent different the number of logs at different levels. */
+    @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (LogsServlet.logs != null && req != null && resp != null) {
             if (LogsServlet.logs.size() > 0) {
@@ -29,18 +30,14 @@ public class StatsPNGServlet extends HttpServlet {
                 List<JsonObject> logs = new ArrayList<JsonObject>(LogsServlet.logs); //Deep copy of logs
 
                 /* Storing initial values in map */
-                String level = "";
                 for (JsonObject log : logs) {
-                    level = log.get("level").toString().substring(1, log.get("level").toString().length() - 1);
-                    levelToLogs.put(level, 0);
+                    levelToLogs.put(log.get("level").toString().substring(1, log.get("level").toString().length() - 1), 0);
                 }
 
                 /* Storing the number of logs for a level in the map */
                 for (JsonObject log : logs) {
-                    level = log.get("level").toString().substring(1, log.get("level").toString().length() - 1);
-                    if (levelToLogs.containsKey(level)) {
-                        levelToLogs.put(level, levelToLogs.get(level) + 1);
-                    }
+                    String level = log.get("level").toString().substring(1, log.get("level").toString().length() - 1);
+                    levelToLogs.put(level, levelToLogs.get(level) + 1);
                 }
 
                 /* Storing the map in a dataset */

@@ -9,14 +9,14 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /** Class that contains the tests for the doGet() method in LogsServlet. */
 public class TestGetLogs {
-    @Test
+
     /** Testing that 400 error code is the response when request is given with no parameters */
+    @Test
     public void testInvalidResponseCodeNoParam() throws IOException {
         /* Creating mock request and response */
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -26,8 +26,8 @@ public class TestGetLogs {
         assertEquals(400, response.getStatus()); //400 is the failure response code
     }
 
-    @Test
     /** Testing that 400 error code is the response when request is given with only the level parameter */
+    @Test
     public void testInvalidResponseCodeOneParamLevel() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -38,8 +38,8 @@ public class TestGetLogs {
         assertEquals(400, response.getStatus());
     }
 
-    @Test
     /** Testing that 400 error code is the response when request is given with only the limit parameter */
+    @Test
     public void testInvalidResponseCodeOneParamLimit() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -50,8 +50,8 @@ public class TestGetLogs {
         assertEquals(400, response.getStatus());
     }
 
-    @Test
     /** Testing that 400 error code is the response when request is given with a negative limit */
+    @Test
     public void testInvalidResponseCodeNegativeLimit() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -94,8 +94,8 @@ public class TestGetLogs {
         assertEquals(400, response.getStatus());
     }
 
-    @Test
     /** Testing that 400 error code is the response when request is given with a limit that isn't an integer */
+    @Test
     public void testInvalidResponseCodeNonIntLimit() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -106,8 +106,8 @@ public class TestGetLogs {
         assertEquals(400, response.getStatus());
     }
 
-    @Test
     /** Testing that 400 error code is the response when request is given with a level that isn't valid (outside of enum 'levels' scope in LogsServlet) */
+    @Test
     public void testInvalidResponseCodeInvalidLevel() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -118,8 +118,8 @@ public class TestGetLogs {
         assertEquals(400, response.getStatus());
     }
 
-    @Test
     /** Testing that doGet() works (responds with 200 status code) when given a request (that has valid parameters) and a response. */
+    @Test
     public void testValidResponseCode() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -162,9 +162,9 @@ public class TestGetLogs {
         assertEquals(200, response.getStatus()); //200 is the success response code
     }
 
-    @Test
     /** Tests that the log events in the response are formatted correctly (and contain all the relevant fields) and are sorted
      * by timestamp (latest logs are first) */
+    @Test
     public void testTimestampSorted() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -233,8 +233,8 @@ public class TestGetLogs {
 
     }
 
-    @Test
     /** Tests that the content type of the response is valid */
+    @Test
     public void testValidContentType() throws IOException{
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -246,8 +246,8 @@ public class TestGetLogs {
         assertTrue(response.getContentType().startsWith("application/json")); //Content type should be application/json since Json String is being returned
     }
 
-    @Test
     /** Tests that request's limit parameter limits the number of logs in the response */
+    @Test
     public void testLimitResponse() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -293,8 +293,8 @@ public class TestGetLogs {
         assertEquals(2, logs.size()); //Since limit is 2 only 2 logs should be returned.
     }
 
-    @Test
     /** Tests that request's level parameter filters the response to logs that have a level equal to or higher than the level parameter */
+    @Test
     public void testLevelFilteringResponse() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -343,8 +343,8 @@ public class TestGetLogs {
         assertEquals("\"ERROR\"", logs.get(1).getAsJsonObject().get("level").toString());
     }
 
-    @Test
     /** Tests that when the response responds with only one log that a JsonObject string is produced not a JsonArray string */
+    @Test
     public void testJsonObjectResponse() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();

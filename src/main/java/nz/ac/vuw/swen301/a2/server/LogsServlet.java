@@ -31,11 +31,11 @@ public class LogsServlet extends HttpServlet {
         logs = new ArrayList<JsonObject>();
     }
 
-    @Override
     /** This method lets users request logs from the server, as part of the request the limit (amount of logs) and level
      * of the logs must be specified
      * @param req The users request
      * @param resp The servers response*/
+    @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         /* Check that limit and level are specified */
         if (req.getParameter("limit") == null || req.getParameter("level") == null) {

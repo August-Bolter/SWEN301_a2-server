@@ -15,10 +15,11 @@ import java.util.Date;
 import java.util.List;
 
 public class StatsServlet extends HttpServlet {
-    @Override
+
     /** Returns an html table of log statistics, the table has days represented as columns, and the rows represent loggers, log levels and threads. The cells at the intersection of rows and columns represent the number of log events for the respective category
      *  @param req The users request
      *  @param resp The servlets response */
+    @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (LogsServlet.logs != null && req != null && resp != null) {
             if (LogsServlet.logs.size() > 0) {
@@ -96,7 +97,6 @@ public class StatsServlet extends HttpServlet {
 
                 /* Adding the timestamp to the CSV table */
                 int index = 1;
-                int logIndex = 0; //For determining whether we are at the end of the table
                 for (String date : dates) {
                     results[index][0] = date; //Adding the date to the CSV table
                     index++;

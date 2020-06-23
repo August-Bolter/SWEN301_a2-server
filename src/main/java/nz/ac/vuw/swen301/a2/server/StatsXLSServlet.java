@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,8 +19,9 @@ import java.util.Date;
 import java.util.List;
 
 public class StatsXLSServlet extends HttpServlet {
-    @Override
+
     /** Returns the log statistics (table format) as an excel file. The table has days represented as columns, and the rows represent loggers, log levels and threads. The cells at the intersection of rows and columns represent the number of log events for the respective category */
+    @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (LogsServlet.logs != null && req != null && resp != null) {
             if (LogsServlet.logs.size() > 0) {
@@ -89,7 +89,6 @@ public class StatsXLSServlet extends HttpServlet {
 
                 /* Adding the timestamp to the CSV table */
                 int index = 1;
-                int logIndex = 0; //For determining whether we are at the end of the table
                 for (String date : dates) {
                     results[index][0] = date; //Adding the date to the CSV table
                     index++;
