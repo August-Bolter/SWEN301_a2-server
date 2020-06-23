@@ -30,16 +30,6 @@ public class TestStatsHTML {
     }
 
     @Test
-    /** Testing that no log statistics are generated if server logs is null */
-    public void testLogsNull() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        StatsServlet service = new StatsServlet();
-        service.doGet(request, response);
-        assertEquals(0, response.getContentAsString().length());
-    }
-
-    @Test
     /** Testing that no log statistics are generated if no logs exist on the server */
     public void testLogsEmpty() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -70,6 +60,7 @@ public class TestStatsHTML {
         LogsServlet.logs.add(newObj);
         service.doGet(request, response);
         assertEquals("text/html", response.getContentType());
+        assertEquals(200, response.getStatus());
         Document doc = Jsoup.parse(response.getContentAsString());
         assertNotEquals(null, doc.select("html"));
         assertNotEquals(null, doc.select("head"));
@@ -137,6 +128,7 @@ public class TestStatsHTML {
 
         service.doGet(request, response);
         assertEquals("text/html", response.getContentType());
+        assertEquals(200, response.getStatus());
         Document doc = Jsoup.parse(response.getContentAsString());
         assertNotEquals(null, doc.select("html"));
         assertNotEquals(null, doc.select("head"));

@@ -2,7 +2,7 @@ package test.nz.ac.vuw.swen301.a2.server;
 
 import com.google.gson.JsonObject;
 import nz.ac.vuw.swen301.a2.server.LogsServlet;
-import nz.ac.vuw.swen301.a2.server.StatsCSVServlet;
+import nz.ac.vuw.swen301.a2.server.StatsPNGServlet;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -12,24 +12,14 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/** Test cases for the StatsCSVServlet class */
-public class TestStatsCSV {
+/** Test cases for the StatsPNGServlet class */
+public class TestStatsPNG {
     @Test
     /** Testing that no log statistics are generated if request is null */
     public void testRequestNull() throws IOException {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        StatsCSVServlet service = new StatsCSVServlet();
+        StatsPNGServlet service = new StatsPNGServlet();
         service.doGet(null, response);
-        assertEquals(0, response.getContentAsString().length());
-    }
-
-    @Test
-    /** Testing that no log statistics are generated if server logs is null */
-    public void testLogsNull() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        StatsCSVServlet service = new StatsCSVServlet();
-        service.doGet(request, response);
         assertEquals(0, response.getContentAsString().length());
     }
 
@@ -38,7 +28,7 @@ public class TestStatsCSV {
     public void testLogsEmpty() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        StatsCSVServlet service = new StatsCSVServlet();
+        StatsPNGServlet service = new StatsPNGServlet();
         LogsServlet server = new LogsServlet();
         service.doGet(request, response);
         assertEquals(0, response.getContentAsString().length());
@@ -49,7 +39,7 @@ public class TestStatsCSV {
     public void testOneLogStats() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        StatsCSVServlet service = new StatsCSVServlet();
+        StatsPNGServlet service = new StatsPNGServlet();
         LogsServlet server = new LogsServlet();
 
         /* Creating JsonObjects to test */
@@ -63,23 +53,7 @@ public class TestStatsCSV {
 
         LogsServlet.logs.add(newObj);
         service.doGet(request, response);
-        assertEquals("text/csv", response.getContentType());
-        int colNum = 2;
-        int rowNum = 4;
-        String[][] logDetails = new String[rowNum][colNum];
-        String[] rows = response.getContentAsString().split("\n");
-        int col = 0;
-        int row = 0;
-        for (String r : rows) {
-            String[] cols = r.split("\t");
-            for (String c : cols) {
-                logDetails[row][col] = c;
-                col++;
-            }
-            row++;
-            col = 0;
-        }
-        assertEquals("[[name, 2019-07-29], [com.example.Foo, 1], [INFO, 1], [main, 1]]", Arrays.deepToString(logDetails));
+        assertEquals("image/png", response.getContentType());
         assertEquals(200, response.getStatus());
     }
     @Test
@@ -87,7 +61,7 @@ public class TestStatsCSV {
     public void testMultipleLogsEmpty() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        StatsCSVServlet service = new StatsCSVServlet();
+        StatsPNGServlet service = new StatsPNGServlet();
         LogsServlet server = new LogsServlet();
 
         /* Creating JsonObjects to test */
@@ -120,23 +94,7 @@ public class TestStatsCSV {
         LogsServlet.logs.add(newObj2);
 
         service.doGet(request, response);
-        assertEquals("text/csv", response.getContentType());
-        int colNum = 3;
-        int rowNum = 9;
-        String[][] logDetails = new String[rowNum][colNum];
-        String[] rows = response.getContentAsString().split("\n");
-        int col = 0;
-        int row = 0;
-        for (String r : rows) {
-            String[] cols = r.split("\t");
-            for (String c : cols) {
-                logDetails[row][col] = c;
-                col++;
-            }
-            row++;
-            col = 0;
-        }
-        assertEquals("[[name, 2019-07-29, 2020-03-29], [com.example.Bar, 1, 0], [com.example.Foo, 1, 0], [com.example.Baz, 0, 1], [WARN, 1, 0], [INFO, 1, 0], [ERROR, 0, 1], [main, 2, 0], [concurrent, 0, 1]]", Arrays.deepToString(logDetails));
+        assertEquals("image/png", response.getContentType());
         assertEquals(200, response.getStatus());
     }
 
