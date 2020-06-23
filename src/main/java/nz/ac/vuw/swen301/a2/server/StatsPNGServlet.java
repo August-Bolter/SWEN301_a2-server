@@ -22,7 +22,7 @@ public class StatsPNGServlet extends HttpServlet {
     @Override
     /** Returns a PNG image of a bar-chart where the bars represent different the number of logs at different levels. */
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (LogsServlet.logs != null) {
+        if (LogsServlet.logs != null && req != null && resp != null) {
             if (LogsServlet.logs.size() > 0) {
                 resp.setContentType("image/png"); //Since output will be a PNG image
                 Map<String, Integer> levelToLogs = new HashMap<String, Integer>(); //Storing levels and logs relationship

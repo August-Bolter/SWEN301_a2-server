@@ -12,15 +12,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class StatsXLSServlet extends HttpServlet {
     @Override
     /** Returns the log statistics (table format) as an excel file. The table has days represented as columns, and the rows represent loggers, log levels and threads. The cells at the intersection of rows and columns represent the number of log events for the respective category */
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (LogsServlet.logs != null) {
+        if (LogsServlet.logs != null && req != null && resp != null) {
             if (LogsServlet.logs.size() > 0) {
                 resp.setContentType("application/vnd.ms-excel"); //Since output will be an excel file
                 resp.setCharacterEncoding("UTF-8");
@@ -29,6 +32,21 @@ public class StatsXLSServlet extends HttpServlet {
                 ArrayList<String> rows = new ArrayList<String>(); //List of log values (logger, level and thread)
 
                 List<JsonObject> logs = new ArrayList<JsonObject>(LogsServlet.logs); //Deep copy of logs
+
+                /* Sort list of output logs by timestamp */
+                logs.sort((o1, o2) -> {
+                    try {
+                        Date dateO1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(o1.get("timestamp").toString().substring(1, o1.get("timestamp").toString().length()-1));
+                        Date dateO2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(o2.get("timestamp").toString().substring(1, o2.get("timestamp").toString().length()-1));
+                        if (dateO1.after(dateO2)) return -1;
+                        else if (dateO2.after(dateO1)) return 1;
+                    }
+                    catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    return 0;
+                });
+
                 Collections.reverse(logs); //So they can be reversed without affecting original list
 
                 /* Adding the timestamp to the list */
